@@ -4,85 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ThorFlix - Backlog Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #141414;
-            --text-color: #e5e5e5;
-            --accent: #e50914; /* Netflix Red */
-            --navbar-bg: #000000;
-            --card-bg: #2f2f2f;
-            --star-color: #f1c40f; /* Gold */
+            --bg-color: #0b0b0e;
+            --navbar-bg: rgba(11, 11, 14, 0.85);
+            --card-bg: #16161d;
+            --accent: #e50914;
+            --accent-glow: rgba(229, 9, 20, 0.4);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --star-color: #fbbf24;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             overflow-x: hidden;
-            padding-top: 60px;
+            padding-top: 75px;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(229, 9, 20, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 210, 255, 0.03) 0%, transparent 40%);
         }
 
-        /* Navbar */
+        /* Navbar Moderna con Efecto Glassmorphism */
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
-            height: 60px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
-            background-color: var(--navbar-bg);
+            height: 70px;
+            background: var(--navbar-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 24px;
             z-index: 1000;
         }
 
-        .logo { color: var(--accent); font-size: 1.5rem; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo { 
+            color: var(--accent); 
+            font-size: 1.6rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
         
         .btn-add {
-            background-color: var(--accent);
+            background: linear-gradient(135deg, var(--accent), #b20710);
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
             font-size: 0.9rem;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: all 0.2s ease;
         }
-        .btn-add:active { transform: scale(0.95); }
+        .btn-add:active { transform: scale(0.95); box-shadow: 0 2px 8px var(--accent-glow); }
 
         /* Contenedor Principal */
-        main { padding: 20px; padding-bottom: 50px; }
+        main { padding: 24px; padding-bottom: 60px; max-width: 1400px; margin: 0 auto; }
 
-        /* Categorías */
-        .category { margin-bottom: 30px; }
-        .category-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; padding-left: 5px; }
+        /* Categorías y Carriles */
+        .category { margin-bottom: 36px; }
+        .category-title { 
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            margin-bottom: 14px; 
+            padding-left: 4px; 
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .category-title::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 18px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
         
         .carousel {
             display: flex;
-            gap: 15px;
+            gap: 16px;
             overflow-x: auto;
-            padding: 10px 5px;
+            padding: 10px 4px 15px 4px;
             scroll-behavior: smooth;
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
         .carousel::-webkit-scrollbar { display: none; }
 
-        /* Tarjeta de Juego */
+        /* Tarjeta de Juego Estilo Premium Card */
         .game-card {
             flex: 0 0 auto;
-            width: 140px;
+            width: 150px;
             aspect-ratio: 2 / 3;
             background-color: var(--card-bg);
-            border-radius: 6px;
+            border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
             position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
         }
-        .game-card:hover { transform: scale(1.05); }
+        .game-card:hover { 
+            transform: translateY(-6px) scale(1.02); 
+            box-shadow: 0 12px 25px rgba(0,0,0,0.6), 0 0 15px rgba(229, 9, 20, 0.2);
+            border-color: rgba(229, 9, 20, 0.4);
+        }
         .game-card img { width: 100%; height: 100%; object-fit: cover; }
         .game-card .no-cover {
             display: flex;
@@ -90,9 +137,11 @@
             justify-content: center;
             height: 100%;
             text-align: center;
-            padding: 10px;
-            font-weight: bold;
-            color: #888;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            background: linear-gradient(135deg, #1f1f29, #121218);
         }
 
         /* Overlay y Detalles en Tarjeta */
@@ -100,160 +149,226 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.9) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.92) 100%);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 8px;
+            padding: 10px;
         }
         .overlay-top {
             display: flex;
             justify-content: space-between;
             width: 100%;
+            align-items: center;
         }
         .badge-console {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid #555;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
+            background: rgba(15, 15, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
             color: #fff;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.5px;
         }
         .badge-rating {
-            background: rgba(0,0,0,0.7);
+            background: rgba(15, 15, 20, 0.8);
+            border: 1px solid rgba(251, 191, 36, 0.2);
             padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
             color: var(--star-color);
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(4px);
         }
         .card-genre {
             font-size: 0.75rem;
-            color: #ddd;
-            font-weight: bold;
-            text-shadow: 1px 1px 3px black;
+            color: #e2e8f0;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
             margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* Barra de Progreso */
+        /* Barra de Progreso Moderna */
         .progress-container {
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            height: 4px;
-            background: rgba(255,255,255,0.2);
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
             pointer-events: none;
         }
         .progress-fill {
             height: 100%;
-            background: var(--accent);
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, var(--accent), #ff4757);
+            transition: width 0.4s cubic-bezier(0.1, 0.8, 0.3, 1);
+            border-radius: 0 0 0 12px;
         }
-        .progress-fill.completed { background: #2ecc71; }
+        .progress-fill.completed { background: linear-gradient(90deg, #10b981, #34d399); }
 
-        /* Modal */
+        /* Modal Ultra Moderno */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.85);
+            background-color: rgba(5, 5, 8, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 2000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .modal-content {
-            background-color: #181818;
+            background-color: #121218;
+            border: 1px solid var(--border-color);
             width: 100%;
-            max-width: 500px;
-            border-radius: 10px;
-            padding: 20px;
+            max-width: 480px;
+            border-radius: 20px;
+            padding: 28px;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(229, 9, 20, 0.1);
             max-height: 90vh;
             overflow-y: auto;
         }
 
         .close-btn {
             position: absolute;
-            top: 15px; right: 15px;
-            background: none; border: none;
-            color: white; font-size: 1.5rem;
+            top: 20px; right: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
             cursor: pointer;
+            transition: all 0.2s;
         }
+        .close-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
 
-        .form-row { display: flex; gap: 15px; }
+        .form-row { display: flex; gap: 14px; }
         .form-row .form-group { flex: 1; }
 
-        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
-        .form-group label { margin-bottom: 5px; color: #aaa; font-size: 0.9rem; display: flex; justify-content: space-between; }
-        .form-group input[type="text"], .form-group select, .form-group textarea {
-            background-color: #333; color: white;
-            border: 1px solid #555; border-radius: 4px;
-            padding: 10px; outline: none; font-size: 1rem;
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.85rem; font-weight: 500; display: flex; justify-content: space-between; }
         
-        /* Slider de Progreso */
+        .form-group input[type="text"], .form-group select, .form-group textarea {
+            background-color: #1a1a24; 
+            color: white;
+            border: 1px solid var(--border-color); 
+            border-radius: 10px;
+            padding: 12px 14px; 
+            outline: none; 
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .form-group input[type="text"]:focus, .form-group select:focus, .form-group textarea:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background-color: #1f1f2e;
+        }
+        
+        /* Slider de Progreso Moderno */
         input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
             background: transparent;
-            margin-top: 10px;
+            margin-top: 12px;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 16px; width: 16px;
+            height: 18px; width: 18px;
             border-radius: 50%;
-            background: var(--accent);
+            background: #fff;
             cursor: pointer;
-            margin-top: -6px;
+            box-shadow: 0 0 10px var(--accent);
+            border: 2px solid var(--accent);
+            margin-top: -7px;
+            transition: transform 0.1s;
         }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
         input[type="range"]::-webkit-slider-runnable-track {
             width: 100%; height: 4px;
             cursor: pointer;
-            background: #555;
+            background: #2a2a38;
             border-radius: 2px;
         }
 
-        /* Estrellas Valoración */
+        /* Estrellas Estilizadas */
         .star-rating {
             display: flex;
-            gap: 5px;
-            font-size: 2rem;
-            color: #555;
+            gap: 8px;
+            font-size: 1.8rem;
+            color: #333342;
             cursor: pointer;
             justify-content: center;
-            background: #252525;
-            padding: 5px;
-            border-radius: 8px;
-            border: 1px solid #444;
+            background: #1a1a24;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
-        .star-rating span:hover, .star-rating span.active { color: var(--star-color); }
+        .star-rating span { transition: color 0.15s ease, transform 0.15s ease; }
+        .star-rating span:hover { transform: scale(1.1); }
+        .star-rating span.active { color: var(--star-color); text-shadow: 0 0 10px rgba(251, 191, 36, 0.4); }
 
         .btn-submit {
-            background-color: white; color: black;
-            border: none; padding: 12px; border-radius: 4px;
-            font-weight: bold; cursor: pointer; font-size: 1rem;
-            width: 100%; margin-top: 10px;
+            background: linear-gradient(135deg, var(--accent), #b20710);
+            color: white;
+            border: none; padding: 14px; border-radius: 10px;
+            font-weight: 600; cursor: pointer; font-size: 1rem;
+            width: 100%; margin-top: 12px;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: filter 0.2s, transform 0.1s;
         }
+        .btn-submit:hover { filter: brightness(1.1); }
+        .btn-submit:active { transform: scale(0.98); }
+
         .btn-secondary {
-            background-color: rgba(155, 89, 182, 0.2); color: #9b59b6;
-            border: 1px solid #9b59b6; margin-top: 0;
+            background: rgba(155, 89, 182, 0.15); color: #c084fc;
+            border: 1px solid rgba(192, 132, 252, 0.3); margin-top: 0;
+            box-shadow: none;
         }
-        .btn-delete { background-color: transparent; color: #aaa; border: 1px solid #555; margin-top: 10px; }
+        .btn-secondary:hover { background: rgba(155, 89, 182, 0.25); filter: none; }
+
+        .btn-delete { 
+            background-color: transparent; 
+            color: #f87171; 
+            border: 1px solid rgba(248, 113, 113, 0.3); 
+            margin-top: 12px;
+            box-shadow: none;
+        }
+        .btn-delete:hover { background: rgba(248, 113, 113, 0.1); filter: none; }
         
-        .empty-state { padding: 40px 20px; text-align: center; color: #666; font-size: 1.1rem; }
+        .empty-state { 
+            padding: 60px 20px; 
+            text-align: center; 
+            color: var(--text-muted); 
+            font-size: 1.1rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px dashed var(--border-color);
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">ThorFlix</div>
-        <button class="btn-add" id="btn-open-add">+ Añadir</button>
+        <div class="logo-container">
+            <div class="logo">ThorFlix</div>
+        </div>
+        <button class="btn-add" id="btn-open-add">+ Añadir Juego</button>
     </nav>
 
     <main id="main-content">
@@ -262,8 +377,8 @@
 
     <div class="modal" id="game-modal">
         <div class="modal-content">
-            <button class="close-btn" id="btn-close-modal">✖</button>
-            <h2 id="modal-title" style="margin-bottom: 20px;">Añadir al Catálogo</h2>
+            <button class="close-btn" id="btn-close-modal">✕</button>
+            <h2 id="modal-title" style="margin-bottom: 22px; font-weight: 600; font-size: 1.3rem;">Añadir al Catálogo</h2>
             
             <input type="hidden" id="game-id">
             
@@ -285,7 +400,7 @@
             
             <div class="form-row">
                 <div class="form-group" style="flex: 2;">
-                    <label>Progreso <span id="progress-label" style="color:white; font-weight:bold;">0%</span></label>
+                    <label>Progreso <span id="progress-label" style="color:#fff; font-weight:600;">0%</span></label>
                     <input type="range" id="game-progress" min="0" max="100" value="0">
                 </div>
                 <div class="form-group" style="flex: 3;">
@@ -312,12 +427,12 @@
             
             <div class="form-group">
                 <label>Carátula (Sube la tuya o busca en Google)</label>
-                <div style="display: flex; gap: 10px; margin-top: 5px;">
-                    <button class="btn-submit" style="background:#444; color:white; margin:0; flex:1;" id="btn-upload-cover">📸 Subir</button>
+                <div style="display: flex; gap: 10px; margin-top: 4px;">
+                    <button class="btn-submit" style="background:#2a2a38; color:white; margin:0; flex:1; box-shadow:none;" id="btn-upload-cover">📸 Subir</button>
                     <button class="btn-submit btn-secondary" style="flex:1;" id="btn-search-cover">🔍 Buscar</button>
                 </div>
                 <input type="file" id="file-input" accept="image/*" style="display:none;">
-                <img id="cover-preview" style="max-width: 100px; margin-top: 10px; border-radius: 4px; display: none;">
+                <img id="cover-preview" style="max-width: 90px; margin-top: 12px; border-radius: 8px; border: 1px solid var(--border-color); display: none;">
             </div>
 
             <div class="form-group">
@@ -331,7 +446,6 @@
     </div>
 
     <script>
-        // --- Estado de la Base de Datos ---
         let library = JSON.parse(localStorage.getItem('thorflix_data')) || [];
         let tempCoverData = null; 
         const modal = document.getElementById('game-modal');
@@ -340,14 +454,13 @@
         const progressLabel = document.getElementById('progress-label');
         const statusSelect = document.getElementById('game-status');
         
-        // Estrellas
         const stars = document.querySelectorAll('#star-rating span');
         const ratingInput = document.getElementById('game-rating');
 
         stars.forEach(star => {
             star.onclick = () => {
                 const val = parseInt(star.getAttribute('data-value'));
-                ratingInput.value = val === parseInt(ratingInput.value) ? 0 : val; // Toggle off si se pulsa la misma
+                ratingInput.value = val === parseInt(ratingInput.value) ? 0 : val;
                 updateStars(ratingInput.value);
             };
         });
@@ -359,7 +472,6 @@
             });
         }
 
-        // Búsqueda de Carátula en Google
         document.getElementById('btn-search-cover').onclick = (e) => {
             e.preventDefault();
             const title = document.getElementById('game-title').value.trim();
@@ -372,7 +484,6 @@
             window.open('https://www.google.com/search?tbm=isch&q=' + query, '_blank');
         };
 
-        // Slider progreso
         progressSlider.addEventListener('input', (e) => {
             progressLabel.textContent = e.target.value + '%';
             if(e.target.value === "100") statusSelect.value = "completed";
@@ -392,7 +503,7 @@
             const completed = library.filter(g => g.status === 'completed');
 
             if (library.length === 0) {
-                mainContent.innerHTML = `<div class="empty-state">Tu catálogo está vacío.<br>Pulsa "+ Añadir" para empezar.</div>`;
+                mainContent.innerHTML = `<div class="empty-state">Tu catálogo está vacío.<br>Pulsa <b>"+ Añadir Juego"</b> para empezar a organizar tu colección.</div>`;
                 return;
             }
 
@@ -415,10 +526,8 @@
                 card.onclick = () => editGame(game.id);
 
                 const coverHtml = game.cover ? `<img src="${game.cover}" alt="${game.title}">` : `<div class="no-cover">${game.title}</div>`;
-                
                 const consoleBadge = game.console ? `<div class="badge-console">${game.console}</div>` : '<div></div>';
                 const ratingBadge = (game.rating && game.rating > 0) ? `<div class="badge-rating">★ ${game.rating}</div>` : '<div></div>';
-                
                 const genreText = game.genre ? `<div class="card-genre">${game.genre}</div>` : '';
                 
                 const progressClass = game.status === 'completed' || game.progress == 100 ? 'progress-fill completed' : 'progress-fill';
