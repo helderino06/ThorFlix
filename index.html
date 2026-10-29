@@ -8,15 +8,15 @@
     <style>
         :root {
             --bg-base: #040406;
-            --bg-surface: #0e0e12;
-            --bg-card: #15151c;
+            --bg-surface: #101016;
+            --bg-card: #171720;
             --accent: #ff2a3b;
             --accent-gradient: linear-gradient(135deg, #ff2a3b 0%, #b30012 100%);
-            --accent-glow: rgba(255, 42, 59, 0.4);
+            --accent-glow: rgba(255, 42, 59, 0.5);
             --text-main: #fafafa;
             --text-muted: #94a3b8;
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-active: rgba(255, 42, 59, 0.5);
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --border-active: rgba(255, 42, 59, 0.6);
             --star-color: #fbbf24;
             --success: #10b981;
         }
@@ -32,48 +32,40 @@
             position: relative;
         }
 
-        /* Fondo Animado y Dinámico (Malla de Gradientes / Aurora) */
+        /* Fondo Texturizado con Rejilla y Luces Fuertes */
         .bg-ambient {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             z-index: -1;
             pointer-events: none;
             overflow: hidden;
-            background: radial-gradient(circle at 50% 0%, #12080a 0%, #040406 70%);
+            background-color: var(--bg-base);
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
         .bg-glow-1 {
             position: absolute;
-            top: -15vh;
-            left: -10vw;
-            width: 55vw;
-            height: 55vw;
-            background: radial-gradient(circle, rgba(255, 42, 59, 0.12) 0%, rgba(179, 0, 18, 0.03) 50%, transparent 70%);
+            top: -10vh;
+            left: -5vw;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(255, 42, 59, 0.22) 0%, rgba(179, 0, 18, 0.05) 50%, transparent 70%);
             border-radius: 50%;
-            filter: blur(60px);
-            animation: floatGlow 12s ease-in-out infinite alternate;
+            filter: blur(50px);
         }
 
         .bg-glow-2 {
             position: absolute;
-            top: 30vh;
-            right: -15vw;
-            width: 50vw;
-            height: 50vw;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(147, 51, 234, 0.02) 50%, transparent 70%);
+            bottom: -10vh;
+            right: -5vw;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, rgba(147, 51, 234, 0.05) 50%, transparent 70%);
             border-radius: 50%;
-            filter: blur(80px);
-            animation: floatGlow2 15s ease-in-out infinite alternate;
-        }
-
-        @keyframes floatGlow {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(5vw, 10vh) scale(1.1); }
-        }
-
-        @keyframes floatGlow2 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-7vw, -8vh) scale(1.15); }
+            filter: blur(70px);
         }
 
         /* Navbar Cinematográfica con Glassmorphism Profundo */
@@ -81,7 +73,7 @@
             position: fixed;
             top: 0; left: 0; right: 0;
             height: 75px;
-            background: rgba(4, 4, 6, 0.75);
+            background: rgba(6, 6, 9, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-subtle);
@@ -90,7 +82,7 @@
             align-items: center;
             padding: 0 32px;
             z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
 
         .logo-container {
@@ -167,7 +159,7 @@
         }
         .carousel::-webkit-scrollbar { display: none; }
 
-        /* Tarjeta de Juego Cinematográfica con Sutil Brillo de Borde */
+        /* Tarjeta de Juego Cinematográfica */
         .game-card {
             flex: 0 0 auto;
             width: 160px;
@@ -183,7 +175,7 @@
         }
         .game-card:hover { 
             transform: translateY(-8px) scale(1.03); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px rgba(255, 42, 59, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px rgba(255, 42, 59, 0.4);
             border-color: var(--border-active);
         }
         .game-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
@@ -207,7 +199,7 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
-            background: linear-gradient(to bottom, rgba(4,4,6,0.8) 0%, rgba(4,4,6,0) 35%, rgba(4,4,6,0) 55%, rgba(4,4,6,0.96) 100%);
+            background: linear-gradient(to bottom, rgba(6,6,9,0.85) 0%, rgba(6,6,9,0) 35%, rgba(6,6,9,0) 55%, rgba(6,6,9,0.96) 100%);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -220,8 +212,8 @@
             align-items: center;
         }
         .badge-console {
-            background: rgba(14, 14, 18, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(16, 16, 22, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             padding: 4px 9px;
             border-radius: 8px;
             font-size: 0.68rem;
@@ -232,8 +224,8 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
         .badge-rating {
-            background: rgba(14, 14, 18, 0.85);
-            border: 1px solid rgba(251, 191, 36, 0.25);
+            background: rgba(16, 16, 22, 0.9);
+            border: 1px solid rgba(251, 191, 36, 0.3);
             padding: 4px 8px;
             border-radius: 8px;
             font-size: 0.75rem;
@@ -274,7 +266,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(4, 4, 6, 0.8);
+            background-color: rgba(6, 6, 9, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             z-index: 2000;
@@ -291,13 +283,13 @@
 
         .modal-content {
             background-color: var(--bg-surface);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             width: 100%;
             max-width: 520px;
             border-radius: 24px;
             padding: 32px;
             position: relative;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 50px rgba(255, 42, 59, 0.15);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 50px rgba(255, 42, 59, 0.2);
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -324,9 +316,9 @@
         .form-group label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; display: flex; justify-content: space-between; letter-spacing: 0.3px; }
         
         .form-group input[type="text"], .form-group select, .form-group textarea {
-            background-color: #121218; 
+            background-color: #14141c; 
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: 12px;
             padding: 13px 16px; 
             outline: none; 
@@ -336,7 +328,7 @@
         .form-group input[type="text"]:focus, .form-group select:focus, .form-group textarea:focus { 
             border-color: var(--accent); 
             box-shadow: 0 0 0 4px var(--accent-glow);
-            background-color: #1a1a24;
+            background-color: #1c1c28;
         }
         
         /* Slider de Progreso Estilizado */
@@ -361,7 +353,7 @@
         input[type="range"]::-webkit-slider-runnable-track {
             width: 100%; height: 5px;
             cursor: pointer;
-            background: #22222f;
+            background: #252533;
             border-radius: 3px;
         }
 
@@ -373,10 +365,10 @@
             color: #262633;
             cursor: pointer;
             justify-content: center;
-            background: #121218;
+            background: #14141c;
             padding: 12px;
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .star-rating span { transition: color 0.2s ease, transform 0.2s ease; }
         .star-rating span:hover { transform: scale(1.15); color: #fde047; }
@@ -395,20 +387,20 @@
         .btn-submit:active { transform: scale(0.98); }
 
         .btn-secondary {
-            background: rgba(139, 92, 246, 0.15); color: #c084fc;
-            border: 1px solid rgba(139, 92, 246, 0.3); margin-top: 0;
+            background: rgba(139, 92, 246, 0.2); color: #c084fc;
+            border: 1px solid rgba(139, 92, 246, 0.4); margin-top: 0;
             box-shadow: none;
         }
-        .btn-secondary:hover { background: rgba(139, 92, 246, 0.25); filter: none; }
+        .btn-secondary:hover { background: rgba(139, 92, 246, 0.3); filter: none; }
 
         .btn-delete { 
             background-color: transparent; 
             color: #f87171; 
-            border: 1px solid rgba(248, 113, 113, 0.3); 
+            border: 1px solid rgba(248, 113, 113, 0.4); 
             margin-top: 14px;
             box-shadow: none;
         }
-        .btn-delete:hover { background: rgba(248, 113, 113, 0.1); filter: none; }
+        .btn-delete:hover { background: rgba(248, 113, 113, 0.15); filter: none; }
         
         .empty-state { 
             padding: 70px 20px; 
@@ -417,14 +409,14 @@
             font-size: 1.1rem;
             background: var(--bg-card);
             border-radius: 20px;
-            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Fondo Dinámico con Aurora y Luces Ambientales -->
+    <!-- Fondo con Rejilla Texturizada y Focos de Luz de Alta Intensidad -->
     <div class="bg-ambient">
         <div class="bg-glow-1"></div>
         <div class="bg-glow-2"></div>
@@ -494,11 +486,11 @@
             <div class="form-group">
                 <label>Carátula (Sube la tuya o busca en Google)</label>
                 <div style="display: flex; gap: 12px; margin-top: 6px;">
-                    <button class="btn-submit" style="background:#1c1c26; color:white; margin:0; flex:1; box-shadow:none; border: 1px solid rgba(255,255,255,0.08);" id="btn-upload-cover">📸 Subir</button>
+                    <button class="btn-submit" style="background:#1c1c26; color:white; margin:0; flex:1; box-shadow:none; border: 1px solid rgba(255,255,255,0.1);" id="btn-upload-cover">📸 Subir</button>
                     <button class="btn-submit btn-secondary" style="flex:1;" id="btn-search-cover">🔍 Buscar</button>
                 </div>
                 <input type="file" id="file-input" accept="image/*" style="display:none;">
-                <img id="cover-preview" style="max-width: 95px; margin-top: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); display: none;">
+                <img id="cover-preview" style="max-width: 95px; margin-top: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); display: none;">
             </div>
 
             <div class="form-group">
