@@ -328,7 +328,7 @@
         .note-body { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; }
         .note-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #64748b; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; }
 
-        /* Mapas Mejorados con selector de juego y subida de imagen de mapa */
+        /* Mapas */
         .maps-toolbar {
             display: flex;
             gap: 16px;
@@ -1091,9 +1091,8 @@
         };
 
 
-        // --- MÓDULO 3: MAPAS (MEJORADO CON ASOCIACIÓN A JUEGOS Y SUBIDA DE IMAGEN) ---
-        let mapsData = JSON.parse(localStorage.getItem('thorflix_maps_data')) || {}; 
-        // mapsData formato: { gameId: { mapImage: "...", pins: [...] } }
+        // --- MÓDULO 3: MAPAS ( CORREGIDO Y ROBUSTO ) ---
+        let mapsData = JSON.parse(localStorage.getItem('thorflix_maps_data')) || {};
         
         const mapModal = document.getElementById('map-modal');
         const mapGameSelector = document.getElementById('map-game-selector');
@@ -1119,7 +1118,7 @@
             renderMaps();
         };
 
-        // Subir imagen de mapa para el juego seleccionado
+        // Subir imagen de mapa
         document.getElementById('btn-upload-map-img').onclick = () => {
             if(!mapGameSelector.value) {
                 alert("Selecciona primero un juego en la lista desplegable.");
@@ -1158,7 +1157,7 @@
             this.value = '';
         });
 
-        // Buscar mapa en Google para el juego seleccionado
+        // Buscar mapa en Google
         document.getElementById('btn-search-map-web').onclick = (e) => {
             e.preventDefault();
             const gameId = mapGameSelector.value;
@@ -1171,14 +1170,13 @@
             window.open('https://www.google.com/search?tbm=isch&q=' + query, '_blank');
         };
 
-        // Permitir hacer clic en el mapa para añadir un pin directamente en esas coordenadas
+        // Clic en el canvas del mapa para añadir pin
         document.getElementById('cyber-map').onclick = function(e) {
             const gameId = mapGameSelector.value;
             if(!gameId) {
                 alert("Selecciona un juego para añadir marcadores en su mapa.");
                 return;
             }
-            // Si hacen clic en un pin existente, no abrir modal de creación
             if(e.target.classList.contains('map-pin')) return;
 
             const rect = this.getBoundingClientRect();
@@ -1193,9 +1191,9 @@
             const mapCanvas = document.getElementById('cyber-map');
             const mapsListContent = document.getElementById('maps-list-content');
             
-            // Limpiar pines y lista
-            const pins = mapCanvas.querySelectorAll('.map-pin');
-            pins.forEach(p => p.remove());
+            // Limpiar pines y fondo
+            const existingPins = mapCanvas.querySelectorAll('.map-pin');
+            existingPins.forEach(p => p.remove());
             mapsListContent.innerHTML = '';
             mapCanvas.style.backgroundImage = 'none';
 
@@ -1210,7 +1208,7 @@
                 mapCanvas.style.backgroundImage = `url(${currentMapObj.mapImage})`;
             }
 
-            if (currentMapObj.pins.length === 0) {
+            if (!currentMapObj.pins || currentMapObj.pins.length === 0) {
                 mapsListContent.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding:20px;">Sin marcadores. Haz clic en cualquier parte del mapa para añadir uno.</div>`;
                 return;
             }
@@ -1287,15 +1285,20 @@
             const title = document.getElementById('map-title-input').value.trim();
             const x = parseInt(document.getElementById('map-x-input').value) || 50;
             const y = parseInt(document.getElementById('map-y-input').value) || 50;
-            const desc = document.getElementById('map-desc-input'].value.trim();
+            const desc = document.getElementById('map-desc-input').value.trim();
             if(!title) { alert('El nombre del lugar es obligatorio'); return; }
 
             if(!mapsData[gameId]) mapsData[gameId] = { mapImage: null, pins: [] };
+            if(!mapsData[gameId].pins) mapsData[gameId].pins = [];
 
             const pinObj = { id: id ? parseInt(id) : Date.now(), title, x, y, desc };
             if(id) {
                 const idx = mapsData[gameId].pins.findIndex(x => x.id === parseInt(id));
-                mapsData[gameId].pins[idx] = pinObj;
+                if(idx !== -1) {
+                    mapsData[gameId].pins[idx] = pinObj;
+                } else {
+                    mapsData[gameId].pins.push(pinObj);
+                }
             } else {
                 mapsData[gameId].pins.push(pinObj);
             }
@@ -1309,19 +1312,23 @@
             if(confirm("¿Eliminar este marcador?")) {
                 const gameId = mapGameSelector.value;
                 const id = parseInt(document.getElementById('map-id').value);
-                if(mapsData[gameId]) {
-                    mapsData[gameId].pins = mapsData[gameId].pins.instances ? mapsData[gameId].pins : mapsData[gameId].pins.filter(x => x.id !== id);
-                    localStorage.setItem('thorflix_maps_data', JSON.stringify(mapsData));
+                if(mapsData[gameId] && mapsData[gameId].pins) {
+                    mapsData[gameId].pins = mapsData[gameId].pins.filter(x => x.id !== id);
+                    localStorage.setItem('thorpy_maps_data' ? '' : 'thorflix_maps_data', JSON.stringify(mapsData));
                 }
                 mapModal.style.display = 'none';
                 renderMaps();
             }
         };
 
-        // Inicializar vistas y selector
-        renderLibrary();
-        renderNotes();
-        updateMapGameSelector();
+        // Inicialización segura general
+        try {
+            renderLibrary();
+            renderNotes();
+            updateMapGameSelector();
+        } catch(err) {
+            console.error("Error al inicializar ThorHub:", err);
+        }
     </script>
 </body>
 </html>
