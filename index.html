@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ThorFlix - Backlog Manager</title>
+    <title>ThorFlix - Ecosystem Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,6 +19,8 @@
             --border-active: rgba(255, 42, 59, 0.6);
             --star-color: #fbbf24;
             --success: #10b981;
+            --notes-accent: #3b82f6;
+            --maps-accent: #10b981;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -68,7 +70,7 @@
             filter: blur(70px);
         }
 
-        /* Navbar Cinematográfica con Glassmorphism Profundo */
+        /* Navbar Cinematográfica y Pestañas de Ecosistema */
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -93,7 +95,7 @@
 
         .logo { 
             color: var(--text-main); 
-            font-size: 1.6rem; 
+            font-size: 1.5rem; 
             font-weight: 800; 
             text-transform: uppercase; 
             letter-spacing: 1.5px;
@@ -103,12 +105,44 @@
             color: var(--accent);
             text-shadow: 0 0 25px var(--accent-glow);
         }
+
+        /* Selector de Módulos (Ecosistema Fusionado) */
+        .hub-tabs {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 5px;
+            border-radius: 14px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .hub-tab {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hub-tab:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+        .hub-tab.active { background: var(--accent-gradient); color: #fff; box-shadow: 0 4px 15px var(--accent-glow); }
+        .hub-tab.notes-tab.active { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
+        .hub-tab.maps-tab.active { background: linear-gradient(135deg, #10b981 0%, #047857 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
         
+        .nav-actions { display: flex; align-items: center; gap: 16px; }
+
         .btn-add {
             background: var(--accent-gradient);
             color: white;
             border: none;
-            padding: 11px 22px;
+            padding: 10px 20px;
             border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
@@ -122,10 +156,18 @@
         .btn-add:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 8px 25px var(--accent-glow); }
         .btn-add:active { transform: scale(0.96); }
 
-        /* Contenedor Principal */
+        /* Contenedor Principal y Vistas del Hub */
         main { padding: 32px 24px 60px 24px; max-width: 1500px; margin: 0 auto; position: relative; z-index: 1; }
 
-        /* Categorías Estilo Streaming */
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Categorías Estilo Streaming (ThorFlix) */
         .category { margin-bottom: 40px; }
         .category-title { 
             font-size: 1.3rem; 
@@ -194,7 +236,6 @@
             background: linear-gradient(135deg, #181822, #0d0d12);
         }
 
-        /* Overlay y Detalles en Tarjeta */
         .card-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -245,7 +286,6 @@
             text-overflow: ellipsis;
         }
 
-        /* Barra de Progreso Avanzada */
         .progress-container {
             position: absolute;
             bottom: 0; left: 0; right: 0;
@@ -261,7 +301,121 @@
         }
         .progress-fill.completed { background: linear-gradient(90deg, #10b981, #34d399); }
 
-        /* Modal Ultra Limpio y Moderno con Efecto Glass */
+        /* Módulo de Notas (Estilo Grid Moderno) */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .note-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
+        }
+        .note-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+        .note-title { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .note-body { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; }
+        .note-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #64748b; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; }
+
+        /* Módulo de Mapas (Puntos de Interés / Coleccionables / Lugares) */
+        .maps-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            height: calc(100vh - 160px);
+        }
+        @media (max-width: 900px) {
+            .maps-layout { grid-template-columns: 1fr; height: auto; }
+        }
+
+        .map-canvas-container {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            min-height: 450px;
+        }
+
+        /* Mapa Simulado Interactivo con Estilo Cyber/Retro */
+        .cyber-map {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #101c2c 0%, #060b14 100%);
+            position: relative;
+            overflow: hidden;
+            cursor: grab;
+        }
+        .cyber-map::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(to right, rgba(16, 185, 129, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(16, 185, 129, 0.08) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .map-pin {
+            position: absolute;
+            width: 36px; height: 36px;
+            background: var(--maps-accent);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 800; font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
+            border: 2px solid #fff;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s ease;
+            z-index: 10;
+        }
+        .map-pin:hover { transform: translate(-50%, -50%) scale(1.2); }
+        .map-pin.visited { background: #64748b; box-shadow: 0 0 10px rgba(100, 116, 139, 0.5); }
+
+        .map-sidebar {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .map-location-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 14px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .map-location-item:hover { border-color: var(--maps-accent); transform: translateX(4px); }
+        .map-location-item h4 { font-size: 0.95rem; color: #fff; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .map-location-item p { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Modales Unificados */
         .modal {
             display: none;
             position: fixed;
@@ -331,7 +485,6 @@
             background-color: #1c1c28;
         }
         
-        /* Slider de Progreso Estilizado */
         input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
@@ -357,7 +510,6 @@
             border-radius: 3px;
         }
 
-        /* Estrellas Estéticas */
         .star-rating {
             display: flex;
             gap: 10px;
@@ -416,7 +568,6 @@
 </head>
 <body>
 
-    <!-- Fondo con Rejilla Texturizada y Focos de Luz de Alta Intensidad -->
     <div class="bg-ambient">
         <div class="bg-glow-1"></div>
         <div class="bg-glow-2"></div>
@@ -424,15 +575,50 @@
 
     <nav>
         <div class="logo-container">
-            <div class="logo">Thor<span>Flix</span></div>
+            <div class="logo">Thor<span>Hub</span></div>
         </div>
-        <button class="btn-add" id="btn-open-add"><span>+</span> Añadir Juego</button>
+        
+        <div class="hub-tabs">
+            <button class="hub-tab active" data-target="thorflix-view" id="tab-flix">🎬 ThorFlix</button>
+            <button class="hub-tab notes-tab" data-target="notes-view" id="tab-notes">📝 Notas</button>
+            <button class="hub-tab maps-tab" data-target="maps-view" id="tab-maps">🗺️ Mapas</button>
+        </div>
+
+        <div class="nav-actions">
+            <button class="btn-add" id="btn-open-add"><span>+</span> Añadir Elemento</button>
+        </div>
     </nav>
 
-    <main id="main-content">
-        <!-- Generado por JS -->
+    <main>
+        <!-- VISTA THORFLIX -->
+        <section id="thorflix-view" class="view-section active">
+            <div id="flix-content"></div>
+        </section>
+
+        <!-- VISTA NOTAS -->
+        <section id="notes-view" class="view-section">
+            <div class="category-title">Bloc de Notas del Ecosistema</div>
+            <div class="notes-grid" id="notes-grid-content"></div>
+        </section>
+
+        <!-- VISTA MAPAS -->
+        <section id="maps-view" class="view-section">
+            <div class="category-title">Mapa de Puntos de Interés / Coleccionables</div>
+            <div class="maps-layout">
+                <div class="map-canvas-container">
+                    <div class="cyber-map" id="cyber-map">
+                        <!-- Marcadores generados dinámicamente -->
+                    </div>
+                </div>
+                <div class="map-sidebar">
+                    <h3 style="font-size: 1rem; color: #fff; margin-bottom: 8px;">Ubicaciones Registradas</h3>
+                    <div id="maps-list-content" style="display: flex; flex-direction: column; gap: 12px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </section>
     </main>
 
+    <!-- MODAL THORFLIX -->
     <div class="modal" id="game-modal">
         <div class="modal-content">
             <button class="close-btn" id="btn-close-modal">✕</button>
@@ -503,11 +689,90 @@
         </div>
     </div>
 
+    <!-- MODAL NOTAS -->
+    <div class="modal" id="note-modal">
+        <div class="modal-content">
+            <button class="close-btn" id="btn-close-note-modal">✕</button>
+            <h2 id="note-modal-title" style="margin-bottom: 24px; font-weight: 700; font-size: 1.4rem;">Nueva Nota</h2>
+            
+            <input type="hidden" id="note-id">
+            <div class="form-group">
+                <label>Título de la Nota</label>
+                <input type="text" id="note-title-input" placeholder="Ej: Trucos de Zelda o Ideas de nivel" required>
+            </div>
+            <div class="form-group">
+                <label>Contenido</label>
+                <textarea id="note-body-input" rows="5" placeholder="Escribe tus notas aquí..."></textarea>
+            </div>
+            <button class="btn-submit" id="btn-save-note" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);">Guardar Nota</button>
+            <button class="btn-submit btn-delete" id="btn-delete-note" style="display:none;">Eliminar Nota</button>
+        </div>
+    </div>
+
+    <!-- MODAL MAPAS -->
+    <div class="modal" id="map-modal">
+        <div class="modal-content">
+            <button class="close-btn" id="btn-close-map-modal">✕</button>
+            <h2 id="map-modal-title" style="margin-bottom: 24px; font-weight: 700; font-size: 1.4rem;">Añadir Ubicación / Marcador</h2>
+            
+            <input type="hidden" id="map-id">
+            <div class="form-group">
+                <label>Nombre del Lugar / Zona</label>
+                <input type="text" id="map-title-input" placeholder="Ej: Templo del Fuego / Santuario Oculto" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Coordenada X (%)</label>
+                    <input type="text" id="map-x-input" placeholder="Ej: 45">
+                </div>
+                <div class="form-group">
+                    <label>Coordenada Y (%)</label>
+                    <input type="text" id="map-y-input" placeholder="Ej: 60">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Descripción / Coleccionables</label>
+                <textarea id="map-desc-input" rows="3" placeholder="Ej: Cofre con espada legendaria y 3 corazones."></textarea>
+            </div>
+            <button class="btn-submit" id="btn-save-map" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);">Guardar Marcador</button>
+            <button class="btn-submit btn-delete" id="btn-delete-map" style="display:none;">Eliminar Marcador</button>
+        </div>
+    </div>
+
     <script>
+        // --- GESTIÓN DE ESTADOS Y PESTAÑAS (ECOSISTEMA) ---
+        let currentTab = 'thorflix';
+        
+        const tabs = document.querySelectorAll('.hub-tab');
+        const sections = document.querySelectorAll('.view-section');
+        const btnOpenAdd = document.getElementById('btn-open-add');
+
+        tabs.forEach(tab => {
+            tab.onclick = () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                
+                tab.classList.add('active');
+                const targetId = tab.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+                
+                if(targetId === 'thorflix-view') currentTab = 'thorflix';
+                if(targetId === 'notes-view') currentTab = 'notes';
+                if(targetId === 'maps-view') currentTab = 'maps';
+            };
+        });
+
+        btnOpenAdd.onclick = () => {
+            if(currentTab === 'thorflix') openFlixModal(false);
+            if(currentTab === 'notes') openNoteModal(false);
+            if(currentTab === 'maps') openMapModal(false);
+        };
+
+        // --- MÓDULO 1: THORFLIX ---
         let library = JSON.parse(localStorage.getItem('thorflix_data')) || [];
         let tempCoverData = null; 
-        const modal = document.getElementById('game-modal');
-        const mainContent = document.getElementById('main-content');
+        const flixModal = document.getElementById('game-modal');
+        const flixContent = document.getElementById('flix-content');
         const progressSlider = document.getElementById('game-progress');
         const progressLabel = document.getElementById('progress-label');
         const statusSelect = document.getElementById('game-status');
@@ -534,10 +799,7 @@
             e.preventDefault();
             const title = document.getElementById('game-title').value.trim();
             const consoleName = document.getElementById('game-console').value.trim();
-            if(!title) {
-                alert("Escribe al menos el título del juego para buscar su carátula.");
-                return;
-            }
+            if(!title) { alert("Escribe al menos el título del juego."); return; }
             const query = encodeURIComponent(`${title} ${consoleName} cover art box art IGDB`);
             window.open('https://www.google.com/search?tbm=isch&q=' + query, '_blank');
         };
@@ -555,22 +817,22 @@
         });
 
         function renderLibrary() {
-            mainContent.innerHTML = '';
+            flixContent.innerHTML = '';
             const playing = library.filter(g => g.status === 'playing');
             const backlog = library.filter(g => g.status === 'backlog');
             const completed = library.filter(g => g.status === 'completed');
 
             if (library.length === 0) {
-                mainContent.innerHTML = `<div class="empty-state">Tu catálogo está vacío.<br>Pulsa <b>"+ Añadir Juego"</b> para empezar a organizar tu colección.</div>`;
+                flixContent.innerHTML = `<div class="empty-state">Tu catálogo está vacío.<br>Pulsa <b>"+ Añadir Elemento"</b> para empezar.</div>`;
                 return;
             }
 
-            if (playing.length > 0) createRow('Jugando Actualmente', playing);
-            if (backlog.length > 0) createRow('Mi Lista (Pendientes)', backlog);
-            if (completed.length > 0) createRow('Completados', completed);
+            if (playing.length > 0) createFlixRow('Jugando Actualmente', playing);
+            if (backlog.length > 0) createFlixRow('Mi Lista (Pendientes)', backlog);
+            if (completed.length > 0) createFlixRow('Completados', completed);
         }
 
-        function createRow(title, games) {
+        function createFlixRow(title, games) {
             const section = document.createElement('div');
             section.className = 'category';
             section.innerHTML = `<h2 class="category-title">${title}</h2>`;
@@ -594,24 +856,20 @@
                 card.innerHTML = `
                     ${coverHtml}
                     <div class="card-overlay">
-                        <div class="overlay-top">
-                            ${ratingBadge}
-                            ${consoleBadge}
-                        </div>
+                        <div class="overlay-top">${ratingBadge}${consoleBadge}</div>
                         ${genreText}
                     </div>
                     ${progressHtml}
                 `;
-                
                 carousel.appendChild(card);
             });
 
             section.appendChild(carousel);
-            mainContent.appendChild(section);
+            flixContent.appendChild(section);
         }
 
-        function openModal(isEdit = false) {
-            modal.style.display = 'flex';
+        function openFlixModal(isEdit = false) {
+            flixModal.style.display = 'flex';
             if (!isEdit) {
                 document.getElementById('modal-title').textContent = 'Añadir al Catálogo';
                 document.getElementById('game-id').value = '';
@@ -620,26 +878,21 @@
                 document.getElementById('game-genre').value = '';
                 document.getElementById('game-status').value = 'playing';
                 document.getElementById('game-notes').value = '';
-                
                 progressSlider.value = 0;
                 progressLabel.textContent = '0%';
-                
                 ratingInput.value = 0;
                 updateStars(0);
-
                 document.getElementById('cover-preview').style.display = 'none';
                 document.getElementById('btn-delete-game').style.display = 'none';
                 tempCoverData = null;
             }
         }
 
-        document.getElementById('btn-close-modal').onclick = () => modal.style.display = 'none';
-        document.getElementById('btn-open-add').onclick = () => openModal(false);
+        document.getElementById('btn-close-modal').onclick = () => flixModal.style.display = 'none';
 
         function editGame(id) {
             const game = library.find(g => g.id === id);
             if (!game) return;
-
             document.getElementById('modal-title').textContent = 'Editar Juego';
             document.getElementById('game-id').value = game.id;
             document.getElementById('game-title').value = game.title;
@@ -647,28 +900,19 @@
             document.getElementById('game-genre').value = game.genre || '';
             document.getElementById('game-status').value = game.status;
             document.getElementById('game-notes').value = game.notes || '';
-            
             progressSlider.value = game.progress || 0;
             progressLabel.textContent = (game.progress || 0) + '%';
-            
             ratingInput.value = game.rating || 0;
             updateStars(game.rating || 0);
-            
             tempCoverData = game.cover || null;
             const preview = document.getElementById('cover-preview');
-            if (tempCoverData) {
-                preview.src = tempCoverData;
-                preview.style.display = 'block';
-            } else {
-                preview.style.display = 'none';
-            }
-
+            if (tempCoverData) { preview.src = tempCoverData; preview.style.display = 'block'; }
+            else { preview.style.display = 'none'; }
             document.getElementById('btn-delete-game').style.display = 'block';
-            openModal(true);
+            openFlixModal(true);
         }
 
         document.getElementById('btn-upload-cover').onclick = () => document.getElementById('file-input').click();
-        
         document.getElementById('file-input').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -685,8 +929,7 @@
                     canvasCtx.drawImage(img, 0, 0, width, height);
                     tempCoverData = canvas.toDataURL('image/jpeg', 0.7);
                     const preview = document.getElementById('cover-preview');
-                    preview.src = tempCoverData;
-                    preview.style.display = 'block';
+                    preview.src = tempCoverData; preview.style.display = 'block';
                 };
                 img.src = event.target.result;
             };
@@ -703,42 +946,206 @@
             const notes = document.getElementById('game-notes').value;
             const progress = parseInt(progressSlider.value);
             const rating = parseInt(ratingInput.value);
-
             if (!title) { alert('El título es obligatorio'); return; }
 
-            const gameObj = {
-                id: id ? parseInt(id) : Date.now(),
-                title, console: consoleName, genre, status, notes, progress, rating,
-                cover: tempCoverData
-            };
+            const gameObj = { id: id ? parseInt(id) : Date.now(), title, console: consoleName, genre, status, notes, progress, rating, cover: tempCoverData };
+            if (id) { const index = library.findIndex(g => g.id === parseInt(id)); library[index] = gameObj; }
+            else { library.push(gameObj); }
 
-            if (id) {
-                const index = library.findIndex(g => g.id === parseInt(id));
-                library[index] = gameObj;
-            } else {
-                library.push(gameObj);
-            }
-
-            try {
-                localStorage.setItem('thorflix_data', JSON.stringify(library));
-                modal.style.display = 'none';
-                renderLibrary();
-            } catch (e) {
-                alert("Memoria llena. Borra algunos juegos o imágenes.");
-            }
+            localStorage.setItem('thorflix_data', JSON.stringify(library));
+            flixModal.style.display = 'none';
+            renderLibrary();
         };
 
         document.getElementById('btn-delete-game').onclick = () => {
-            if(confirm("¿Eliminar este juego de tu lista?")) {
+            if(confirm("¿Eliminar este juego?")) {
                 const id = parseInt(document.getElementById('game-id').value);
                 library = library.filter(g => g.id !== id);
                 localStorage.setItem('thorflix_data', JSON.stringify(library));
-                modal.style.display = 'none';
+                flixModal.style.display = 'none';
                 renderLibrary();
             }
         };
 
+
+        // --- MÓDULO 2: NOTAS ---
+        let notesList = JSON.parse(localStorage.getItem('thorflix_notes')) || [
+            { id: 1, title: 'Ideas para Speedrun', body: 'Tomar la ruta norte en el nivel 3 para ahorrar 45 segundos.', date: '26 Oct 2026' }
+        ];
+        const noteModal = document.getElementById('note-modal');
+
+        function renderNotes() {
+            const grid = document.getElementById('notes-grid-content');
+            grid.innerHTML = '';
+            if (notesList.length === 0) {
+                grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;">No hay notas guardadas. Pulsa "+ Añadir Elemento".</div>`;
+                return;
+            }
+            notesList.forEach(n => {
+                const card = document.createElement('div');
+                card.className = 'note-card';
+                card.onclick = () => editNote(n.id);
+                card.innerHTML = `
+                    <div>
+                        <div class="note-title">${n.title}</div>
+                        <div class="note-body">${n.body}</div>
+                    </div>
+                    <div class="note-footer"><span>Nota</span><span>${n.date}</span></div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openNoteModal(isEdit = false) {
+            noteModal.style.display = 'flex';
+            if(!isEdit) {
+                document.getElementById('note-modal-title').textContent = 'Nueva Nota';
+                document.getElementById('note-id').value = '';
+                document.getElementById('note-title-input').value = '';
+                document.getElementById('note-body-input').value = '';
+                document.getElementById('btn-delete-note').style.display = 'none';
+            }
+        }
+
+        document.getElementById('btn-close-note-modal').onclick = () => noteModal.style.display = 'none';
+
+        function editNote(id) {
+            const n = notesList.find(x => x.id === id);
+            if(!n) return;
+            document.getElementById('note-modal-title').textContent = 'Editar Nota';
+            document.getElementById('note-id').value = n.id;
+            document.getElementById('note-title-input').value = n.title;
+            document.getElementById('note-body-input').value = n.body;
+            document.getElementById('btn-delete-note').style.display = 'block';
+            noteModal.style.display = 'flex';
+        }
+
+        document.getElementById('btn-save-note').onclick = () => {
+            const id = document.getElementById('note-id').value;
+            const title = document.getElementById('note-title-input').value.trim();
+            const body = document.getElementById('note-body-input').value.trim();
+            if(!title) { alert('El título es obligatorio'); return; }
+
+            const noteObj = { id: id ? parseInt(id) : Date.now(), title, body, date: new Date().toLocaleDateString() };
+            if(id) { const idx = notesList.findIndex(x => x.id === parseInt(id)); notesList[idx] = noteObj; }
+            else { notesList.push(noteObj); }
+
+            localStorage.setItem('thorflix_notes', JSON.stringify(notesList));
+            noteModal.style.display = 'none';
+            renderNotes();
+        };
+
+        document.getElementById('btn-delete-note').onclick = () => {
+            if(confirm("¿Eliminar esta nota?")) {
+                const id = parseInt(document.getElementById('note-id').value);
+                notesList = notesList.filter(x => x.id !== id);
+                localStorage.setItem('thorflix_notes', JSON.stringify(notesList));
+                noteModal.style.display = 'none';
+                renderNotes();
+            }
+        };
+
+
+        // --- MÓDULO 3: MAPAS ---
+        let mapsList = JSON.parse(localStorage.getItem('thorflix_maps')) || [
+            { id: 1, title: 'Santuario Olvidado', x: 40, y: 55, desc: 'Punto clave con mejora de equipo.' }
+        ];
+        const mapModal = document.getElementById('map-modal');
+
+        function renderMaps() {
+            const mapCanvas = document.getElementById('cyber-map');
+            const mapsListContent = document.getElementById('maps-list-content');
+            
+            // Limpiar marcadores y lista
+            const pins = mapCanvas.querySelectorAll('.map-pin');
+            pins.forEach(p => p.remove());
+            mapsListContent.innerHTML = '';
+
+            if (mapsList.length === 0) {
+                mapsListContent.innerHTML = `<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:20px;">Sin ubicaciones en el mapa.</div>`;
+            }
+
+            mapsList.forEach((m, idx) => {
+                // Crear pin en el mapa interactivo
+                const pin = document.createElement('div');
+                pin.className = 'map-pin';
+                pin.style.left = `${m.x || 50}%`;
+                pin.style.top = `${m.y || 50}%`;
+                pin.textContent = idx + 1;
+                pin.onclick = () => editMap(m.id);
+                mapCanvas.appendChild(pin);
+
+                // Crear ítem en sidebar
+                const item = document.createElement('div');
+                item.className = 'map-location-item';
+                item.onclick = () => editMap(m.id);
+                item.innerHTML = `
+                    <h4><span>📍 ${m.title}</span> <span style="font-size:0.75rem; color:var(--maps-accent);">X:${m.x}% Y:${m.y}%</span></h4>
+                    <p>${m.desc || 'Sin descripción'}</p>
+                `;
+                mapsListContent.appendChild(item);
+            });
+        }
+
+        function openMapModal(isEdit = false) {
+            mapModal.style.display = 'flex';
+            if(!isEdit) {
+                document.getElementById('map-modal-title').textContent = 'Nuevo Marcador';
+                document.getElementById('map-id').value = '';
+                document.getElementById('map-title-input').value = '';
+                document.getElementById('map-x-input').value = '50';
+                document.getElementById('map-y-input').value = '50';
+                document.getElementById('map-desc-input').value = '';
+                document.getElementById('btn-delete-map').style.display = 'none';
+            }
+        }
+
+        document.getElementById('btn-close-map-modal').onclick = () => mapModal.style.display = 'none';
+
+        function editMap(id) {
+            const m = mapsList.find(x => x.id === id);
+            if(!m) return;
+            document.getElementById('map-modal-title').textContent = 'Editar Marcador';
+            document.getElementById('map-id').value = m.id;
+            document.getElementById('map-title-input').value = m.title;
+            document.getElementById('map-x-input').value = m.x;
+            document.getElementById('map-y-input').value = m.y;
+            document.getElementById('map-desc-input').value = m.desc || '';
+            document.getElementById('btn-delete-map').style.display = 'block';
+            mapModal.style.display = 'flex';
+        }
+
+        document.getElementById('btn-save-map').onclick = () => {
+            const id = document.getElementById('map-id').value;
+            const title = document.getElementById('map-title-input').value.trim();
+            const x = parseInt(document.getElementById('map-x-input').value) || 50;
+            const y = parseInt(document.getElementById('map-y-input').value) || 50;
+            const desc = document.getElementById('map-desc-input').value.trim();
+            if(!title) { alert('El título del lugar es obligatorio'); return; }
+
+            const mapObj = { id: id ? parseInt(id) : Date.now(), title, x, y, desc };
+            if(id) { const idx = mapsList.findIndex(x => x.id === parseInt(id)); mapsList[idx] = mapObj; }
+            else { mapsList.push(mapObj); }
+
+            localStorage.setItem('thorflix_maps', JSON.stringify(mapsList));
+            mapModal.style.display = 'none';
+            renderMaps();
+        };
+
+        document.getElementById('btn-delete-map').onclick = () => {
+            if(confirm("¿Eliminar este marcador?")) {
+                const id = parseInt(document.getElementById('map-id').value);
+                mapsList = mapsList.filter(x => x.id !== id);
+                localStorage.setItem('thorflix_maps', JSON.stringify(mapsList));
+                mapModal.style.display = 'none';
+                renderMaps();
+            }
+        };
+
+        // Inicializar vistas
         renderLibrary();
+        renderNotes();
+        renderMaps();
     </script>
 </body>
 </html>
