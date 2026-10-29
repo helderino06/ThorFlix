@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ThorFlix - Ecosystem Hub</title>
+    <title>ThorHub - Ecosystem Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -106,7 +106,6 @@
             text-shadow: 0 0 25px var(--accent-glow);
         }
 
-        /* Selector de Módulos (Ecosistema Fusionado) */
         .hub-tabs {
             display: flex;
             gap: 8px;
@@ -156,7 +155,6 @@
         .btn-add:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 8px 25px var(--accent-glow); }
         .btn-add:active { transform: scale(0.96); }
 
-        /* Contenedor Principal y Vistas del Hub */
         main { padding: 32px 24px 60px 24px; max-width: 1500px; margin: 0 auto; position: relative; z-index: 1; }
 
         .view-section { display: none; }
@@ -167,7 +165,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Categorías Estilo Streaming (ThorFlix) */
+        /* ThorFlix */
         .category { margin-bottom: 40px; }
         .category-title { 
             font-size: 1.3rem; 
@@ -201,7 +199,6 @@
         }
         .carousel::-webkit-scrollbar { display: none; }
 
-        /* Tarjeta de Juego Cinematográfica */
         .game-card {
             flex: 0 0 auto;
             width: 160px;
@@ -301,7 +298,7 @@
         }
         .progress-fill.completed { background: linear-gradient(90deg, #10b981, #34d399); }
 
-        /* Módulo de Notas (Estilo Grid Moderno) */
+        /* Notas */
         .notes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -331,12 +328,34 @@
         .note-body { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; }
         .note-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #64748b; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; }
 
-        /* Módulo de Mapas (Puntos de Interés / Coleccionables / Lugares) */
+        /* Mapas Mejorados con selector de juego y subida de imagen de mapa */
+        .maps-toolbar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: var(--bg-surface);
+            padding: 16px 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .maps-toolbar select, .maps-toolbar input {
+            background-color: #14141c;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px 14px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
         .maps-layout {
             display: grid;
             grid-template-columns: 1fr 380px;
             gap: 24px;
-            height: calc(100vh - 160px);
+            height: calc(100vh - 230px);
         }
         @media (max-width: 900px) {
             .maps-layout { grid-template-columns: 1fr; height: auto; }
@@ -352,35 +371,36 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            min-height: 450px;
+            min-height: 480px;
         }
 
-        /* Mapa Simulado Interactivo con Estilo Cyber/Retro */
         .cyber-map {
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at center, #101c2c 0%, #060b14 100%);
             position: relative;
             overflow: hidden;
-            cursor: grab;
+            background-size: cover;
+            background-position: center;
         }
         .cyber-map::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background-image: 
-                linear-gradient(to right, rgba(16, 185, 129, 0.08) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(16, 185, 129, 0.08) 1px, transparent 1px);
+                linear-gradient(to right, rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
             background-size: 60px 60px;
+            pointer-events: none;
         }
 
         .map-pin {
             position: absolute;
-            width: 36px; height: 36px;
+            width: 34px; height: 34px;
             background: var(--maps-accent);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-weight: 800; font-size: 0.9rem;
+            color: #fff; font-weight: 800; font-size: 0.85rem;
             cursor: pointer;
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
             border: 2px solid #fff;
@@ -389,7 +409,6 @@
             z-index: 10;
         }
         .map-pin:hover { transform: translate(-50%, -50%) scale(1.2); }
-        .map-pin.visited { background: #64748b; box-shadow: 0 0 10px rgba(100, 116, 139, 0.5); }
 
         .map-sidebar {
             background-color: var(--bg-surface);
@@ -603,7 +622,20 @@
 
         <!-- VISTA MAPAS -->
         <section id="maps-view" class="view-section">
-            <div class="category-title">Mapa de Puntos de Interés / Coleccionables</div>
+            <div class="maps-toolbar">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                    <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">Juego:</label>
+                    <select id="map-game-selector" style="flex: 1; max-width: 300px;">
+                        <option value="">-- Selecciona un juego del catálogo --</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-submit btn-secondary" style="margin:0; padding: 10px 16px; font-size: 0.85rem;" id="btn-upload-map-img">📁 Subir Imagen de Mapa</button>
+                    <button class="btn-submit btn-secondary" style="margin:0; padding: 10px 16px; font-size: 0.85rem;" id="btn-search-map-web">🔍 Buscar Mapa en Google</button>
+                    <input type="file" id="map-file-input" accept="image/*" style="display:none;">
+                </div>
+            </div>
+
             <div class="maps-layout">
                 <div class="map-canvas-container">
                     <div class="cyber-map" id="cyber-map">
@@ -611,7 +643,7 @@
                     </div>
                 </div>
                 <div class="map-sidebar">
-                    <h3 style="font-size: 1rem; color: #fff; margin-bottom: 8px;">Ubicaciones Registradas</h3>
+                    <h3 style="font-size: 1rem; color: #fff; margin-bottom: 8px;">Marcadores y Puntos de Interés</h3>
                     <div id="maps-list-content" style="display: flex; flex-direction: column; gap: 12px; overflow-y: auto;"></div>
                 </div>
             </div>
@@ -713,26 +745,26 @@
     <div class="modal" id="map-modal">
         <div class="modal-content">
             <button class="close-btn" id="btn-close-map-modal">✕</button>
-            <h2 id="map-modal-title" style="margin-bottom: 24px; font-weight: 700; font-size: 1.4rem;">Añadir Ubicación / Marcador</h2>
+            <h2 id="map-modal-title" style="margin-bottom: 24px; font-weight: 700; font-size: 1.4rem;">Añadir Marcador de Mapa</h2>
             
             <input type="hidden" id="map-id">
             <div class="form-group">
-                <label>Nombre del Lugar / Zona</label>
-                <input type="text" id="map-title-input" placeholder="Ej: Templo del Fuego / Santuario Oculto" required>
+                <label>Nombre del Lugar / Coleccionable</label>
+                <input type="text" id="map-title-input" placeholder="Ej: Santuario Oculto / Cofre con llave" required>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Coordenada X (%)</label>
+                    <label>Posición X (%)</label>
                     <input type="text" id="map-x-input" placeholder="Ej: 45">
                 </div>
                 <div class="form-group">
-                    <label>Coordenada Y (%)</label>
+                    <label>Posición Y (%)</label>
                     <input type="text" id="map-y-input" placeholder="Ej: 60">
                 </div>
             </div>
             <div class="form-group">
-                <label>Descripción / Coleccionables</label>
-                <textarea id="map-desc-input" rows="3" placeholder="Ej: Cofre con espada legendaria y 3 corazones."></textarea>
+                <label>Descripción / Recompensas</label>
+                <textarea id="map-desc-input" rows="3" placeholder="Ej: Requiere bomba para abrir la entrada."></textarea>
             </div>
             <button class="btn-submit" id="btn-save-map" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);">Guardar Marcador</button>
             <button class="btn-submit btn-delete" id="btn-delete-map" style="display:none;">Eliminar Marcador</button>
@@ -758,14 +790,25 @@
                 
                 if(targetId === 'thorflix-view') currentTab = 'thorflix';
                 if(targetId === 'notes-view') currentTab = 'notes';
-                if(targetId === 'maps-view') currentTab = 'maps';
+                if(targetId === 'maps-view') {
+                    currentTab = 'maps';
+                    updateMapGameSelector();
+                    renderMaps();
+                }
             };
         });
 
         btnOpenAdd.onclick = () => {
             if(currentTab === 'thorflix') openFlixModal(false);
             if(currentTab === 'notes') openNoteModal(false);
-            if(currentTab === 'maps') openMapModal(false);
+            if(currentTab === 'maps') {
+                const gameSelector = document.getElementById('map-game-selector');
+                if(!gameSelector.value) {
+                    alert("Por favor, selecciona primero un juego en la barra superior de mapas.");
+                    return;
+                }
+                openMapModal(false);
+            }
         };
 
         // --- MÓDULO 1: THORFLIX ---
@@ -955,6 +998,7 @@
             localStorage.setItem('thorflix_data', JSON.stringify(library));
             flixModal.style.display = 'none';
             renderLibrary();
+            updateMapGameSelector();
         };
 
         document.getElementById('btn-delete-game').onclick = () => {
@@ -964,6 +1008,7 @@
                 localStorage.setItem('thorflix_data', JSON.stringify(library));
                 flixModal.style.display = 'none';
                 renderLibrary();
+                updateMapGameSelector();
             }
         };
 
@@ -1046,36 +1091,142 @@
         };
 
 
-        // --- MÓDULO 3: MAPAS ---
-        let mapsList = JSON.parse(localStorage.getItem('thorflix_maps')) || [
-            { id: 1, title: 'Santuario Olvidado', x: 40, y: 55, desc: 'Punto clave con mejora de equipo.' }
-        ];
+        // --- MÓDULO 3: MAPAS (MEJORADO CON ASOCIACIÓN A JUEGOS Y SUBIDA DE IMAGEN) ---
+        let mapsData = JSON.parse(localStorage.getItem('thorflix_maps_data')) || {}; 
+        // mapsData formato: { gameId: { mapImage: "...", pins: [...] } }
+        
         const mapModal = document.getElementById('map-modal');
+        const mapGameSelector = document.getElementById('map-game-selector');
+
+        function updateMapGameSelector() {
+            const currentGameId = mapGameSelector.value;
+            mapGameSelector.innerHTML = '<option value="">-- Selecciona un juego del catálogo --</option>';
+            library.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g.id;
+                opt.textContent = `${g.title} (${g.console || 'General'})`;
+                mapGameSelector.appendChild(opt);
+            });
+            if(currentGameId && mapsData[currentGameId]) {
+                mapGameSelector.value = currentGameId;
+            } else if(library.length > 0) {
+                mapGameSelector.value = library[0].id;
+            }
+            renderMaps();
+        }
+
+        mapGameSelector.onchange = () => {
+            renderMaps();
+        };
+
+        // Subir imagen de mapa para el juego seleccionado
+        document.getElementById('btn-upload-map-img').onclick = () => {
+            if(!mapGameSelector.value) {
+                alert("Selecciona primero un juego en la lista desplegable.");
+                return;
+            }
+            document.getElementById('map-file-input').click();
+        };
+
+        document.getElementById('map-file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const gameId = mapGameSelector.value;
+            if(!gameId) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1200;
+                    let width = img.width, height = img.height;
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+                    if(!mapsData[gameId]) mapsData[gameId] = { mapImage: null, pins: [] };
+                    mapsData[gameId].mapImage = dataUrl;
+                    localStorage.setItem('thorflix_maps_data', JSON.stringify(mapsData));
+                    renderMaps();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+            this.value = '';
+        });
+
+        // Buscar mapa en Google para el juego seleccionado
+        document.getElementById('btn-search-map-web').onclick = (e) => {
+            e.preventDefault();
+            const gameId = mapGameSelector.value;
+            const game = library.find(g => g.id == gameId);
+            if(!game) {
+                alert("Selecciona un juego primero para buscar su mapa.");
+                return;
+            }
+            const query = encodeURIComponent(`${game.title} ${game.console || ''} game map overworld map guide`);
+            window.open('https://www.google.com/search?tbm=isch&q=' + query, '_blank');
+        };
+
+        // Permitir hacer clic en el mapa para añadir un pin directamente en esas coordenadas
+        document.getElementById('cyber-map').onclick = function(e) {
+            const gameId = mapGameSelector.value;
+            if(!gameId) {
+                alert("Selecciona un juego para añadir marcadores en su mapa.");
+                return;
+            }
+            // Si hacen clic en un pin existente, no abrir modal de creación
+            if(e.target.classList.contains('map-pin')) return;
+
+            const rect = this.getBoundingClientRect();
+            const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+            const y = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+
+            openMapModal(false, x, y);
+        };
 
         function renderMaps() {
+            const gameId = mapGameSelector.value;
             const mapCanvas = document.getElementById('cyber-map');
             const mapsListContent = document.getElementById('maps-list-content');
             
-            // Limpiar marcadores y lista
+            // Limpiar pines y lista
             const pins = mapCanvas.querySelectorAll('.map-pin');
             pins.forEach(p => p.remove());
             mapsListContent.innerHTML = '';
+            mapCanvas.style.backgroundImage = 'none';
 
-            if (mapsList.length === 0) {
-                mapsListContent.innerHTML = `<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:20px;">Sin ubicaciones en el mapa.</div>`;
+            if(!gameId) {
+                mapListPlaceholder("Selecciona un juego arriba para ver y gestionar su mapa y marcadores.");
+                return;
             }
 
-            mapsList.forEach((m, idx) => {
-                // Crear pin en el mapa interactivo
+            const currentMapObj = mapsData[gameId] || { mapImage: null, pins: [] };
+
+            if(currentMapObj.mapImage) {
+                mapCanvas.style.backgroundImage = `url(${currentMapObj.mapImage})`;
+            }
+
+            if (currentMapObj.pins.length === 0) {
+                mapsListContent.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding:20px;">Sin marcadores. Haz clic en cualquier parte del mapa para añadir uno.</div>`;
+                return;
+            }
+
+            currentMapObj.pins.forEach((m, idx) => {
                 const pin = document.createElement('div');
                 pin.className = 'map-pin';
-                pin.style.left = `${m.x || 50}%`;
-                pin.style.top = `${m.y || 50}%`;
+                pin.style.left = `${m.x}%`;
+                pin.style.top = `${m.y}%`;
                 pin.textContent = idx + 1;
-                pin.onclick = () => editMap(m.id);
+                pin.onclick = (ev) => {
+                    ev.stopPropagation();
+                    editMap(m.id);
+                };
                 mapCanvas.appendChild(pin);
 
-                // Crear ítem en sidebar
                 const item = document.createElement('div');
                 item.className = 'map-location-item';
                 item.onclick = () => editMap(m.id);
@@ -1087,14 +1238,24 @@
             });
         }
 
-        function openMapModal(isEdit = false) {
+        function mapListPlaceholder(text) {
+            const mapsListContent = document.getElementById('maps-list-content');
+            mapsListContent.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem; text-align:center; padding:20px;">${text}</div>`;
+        }
+
+        function openMapModal(isEdit = false, defaultX = 50, defaultY = 50) {
+            const gameId = mapGameSelector.value;
+            if(!gameId) {
+                alert("Selecciona un juego primero.");
+                return;
+            }
             mapModal.style.display = 'flex';
             if(!isEdit) {
-                document.getElementById('map-modal-title').textContent = 'Nuevo Marcador';
+                document.getElementById('map-modal-title').textContent = 'Nuevo Marcador de Mapa';
                 document.getElementById('map-id').value = '';
                 document.getElementById('map-title-input').value = '';
-                document.getElementById('map-x-input').value = '50';
-                document.getElementById('map-y-input').value = '50';
+                document.getElementById('map-x-input').value = defaultX;
+                document.getElementById('map-y-input').value = defaultY;
                 document.getElementById('map-desc-input').value = '';
                 document.getElementById('btn-delete-map').style.display = 'none';
             }
@@ -1103,8 +1264,12 @@
         document.getElementById('btn-close-map-modal').onclick = () => mapModal.style.display = 'none';
 
         function editMap(id) {
-            const m = mapsList.find(x => x.id === id);
+            const gameId = mapGameSelector.value;
+            const currentMapObj = mapsData[gameId];
+            if(!currentMapObj) return;
+            const m = currentMapObj.pins.find(x => x.id === id);
             if(!m) return;
+
             document.getElementById('map-modal-title').textContent = 'Editar Marcador';
             document.getElementById('map-id').value = m.id;
             document.getElementById('map-title-input').value = m.title;
@@ -1116,36 +1281,47 @@
         }
 
         document.getElementById('btn-save-map').onclick = () => {
+            const gameId = mapGameSelector.value;
+            if(!gameId) return;
             const id = document.getElementById('map-id').value;
             const title = document.getElementById('map-title-input').value.trim();
             const x = parseInt(document.getElementById('map-x-input').value) || 50;
             const y = parseInt(document.getElementById('map-y-input').value) || 50;
-            const desc = document.getElementById('map-desc-input').value.trim();
-            if(!title) { alert('El título del lugar es obligatorio'); return; }
+            const desc = document.getElementById('map-desc-input'].value.trim();
+            if(!title) { alert('El nombre del lugar es obligatorio'); return; }
 
-            const mapObj = { id: id ? parseInt(id) : Date.now(), title, x, y, desc };
-            if(id) { const idx = mapsList.findIndex(x => x.id === parseInt(id)); mapsList[idx] = mapObj; }
-            else { mapsList.push(mapObj); }
+            if(!mapsData[gameId]) mapsData[gameId] = { mapImage: null, pins: [] };
 
-            localStorage.setItem('thorflix_maps', JSON.stringify(mapsList));
+            const pinObj = { id: id ? parseInt(id) : Date.now(), title, x, y, desc };
+            if(id) {
+                const idx = mapsData[gameId].pins.findIndex(x => x.id === parseInt(id));
+                mapsData[gameId].pins[idx] = pinObj;
+            } else {
+                mapsData[gameId].pins.push(pinObj);
+            }
+
+            localStorage.setItem('thorflix_maps_data', JSON.stringify(mapsData));
             mapModal.style.display = 'none';
             renderMaps();
         };
 
         document.getElementById('btn-delete-map').onclick = () => {
             if(confirm("¿Eliminar este marcador?")) {
+                const gameId = mapGameSelector.value;
                 const id = parseInt(document.getElementById('map-id').value);
-                mapsList = mapsList.filter(x => x.id !== id);
-                localStorage.setItem('thorflix_maps', JSON.stringify(mapsList));
+                if(mapsData[gameId]) {
+                    mapsData[gameId].pins = mapsData[gameId].pins.instances ? mapsData[gameId].pins : mapsData[gameId].pins.filter(x => x.id !== id);
+                    localStorage.setItem('thorflix_maps_data', JSON.stringify(mapsData));
+                }
                 mapModal.style.display = 'none';
                 renderMaps();
             }
         };
 
-        // Inicializar vistas
+        // Inicializar vistas y selector
         renderLibrary();
         renderNotes();
-        renderMaps();
+        updateMapGameSelector();
     </script>
 </body>
 </html>
