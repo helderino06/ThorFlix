@@ -692,7 +692,6 @@
             <button class="hub-tab notes-tab" data-target="notes-view" id="tab-notes">📝 Notas</button>
             <button class="hub-tab maps-tab" data-target="maps-view" id="tab-maps">🗺️ Mapas</button>
             <button class="hub-tab roulette-tab" data-target="roulette-view" id="tab-roulette">🎰 Ruleta</button>
-            <button class="hub-tab ai-tab" data-target="ai-view" id="tab-ai">🤖 ThorAI</button>
         </div>
 
         <div class="nav-actions">
@@ -737,45 +736,6 @@
                 <div class="map-sidebar">
                     <h3 style="font-size: 1rem; color: #fff; margin-bottom: 8px;">Marcadores y Puntos de Interés</h3>
                     <div id="maps-list-content" style="display: flex; flex-direction: column; gap: 12px; overflow-y: auto;"></div>
-                </div>
-            </div>
-        </section>
-
-        
-        <!-- VISTA THORAI (ASISTENTE IA) -->
-        <section id="ai-view" class="view-section">
-            <div class="ai-container" style="display: flex; flex-direction: column; height: calc(100vh - 160px); max-width: 1000px; margin: 0 auto; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.7);">
-                <div class="ai-header" style="padding: 16px 24px; background: rgba(139, 92, 246, 0.1); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);">🤖</div>
-                        <div>
-                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 800;">ThorAI Pro - Copiloto IA</h3>
-                            <p style="font-size: 0.8rem; color: var(--text-muted);">Analiza tu biblioteca y progreso en tiempo real</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div style="display: flex; align-items: center; gap: 6px; background: #14141c; padding: 6px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
-                            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">Contexto:</span>
-                            <select id="ai-game-selector" style="background: transparent; color: #fff; border: none; outline: none; font-size: 0.85rem; cursor: pointer;">
-                                <option value="">-- Toda la Biblioteca (General) --</option>
-                            </select>
-                        </div>
-                        <button class="hub-tab" id="btn-clear-chat" style="background: rgba(255,255,255,0.05); font-size: 0.8rem; padding: 6px 12px;">Limpiar</button>
-                    </div>
-                </div>
-                
-                <div class="ai-messages" id="ai-messages-box" style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
-                    <div style="display: flex; gap: 12px; max-width: 80%;">
-                        <div style="width: 32px; height: 32px; background: #a855f7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">🤖</div>
-                        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: 16px; font-size: 0.95://rem; color: #fff; line-height: 1.5;">
-                            ¡Hola, guardián! Soy <b>ThorAI</b>, tu copiloto en este ecosistema. ¿En qué juego necesitas ayuda hoy? Puedo darte estrategias de jefes, trucos de velocidad o sugerencias basadas en tu biblioteca.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ai-input-area" style="padding: 20px 24px; background: rgba(16, 16, 22, 0.9); border-top: 1px solid var(--border-subtle); display: flex; gap: 12px; align-items: center;">
-                    <input type="text" id="ai-chat-input" placeholder="Ej: ¿Cómo consigo la espada legendaria en Zelda? o Dame un consejo..." style="flex: 1; background: #14141c; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 14px 18px; outline: none; font-size: 0.95rem;">
-                    <button class="btn-submit" id="btn-send-ai" style="width: auto; margin: 0; padding: 14px 28px; background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%); box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);">Enviar</button>
                 </div>
             </div>
         </section>
@@ -963,10 +923,7 @@
                     currentTab = 'roulette';
                     btnOpenAdd.style.display = 'none'; // Ocultar botón añadir en la ruleta
                 }
-                if(targetId === 'ai-view') {
-                    currentTab = 'ai';
-                    btnOpenAdd.style.display = 'none'; // Ocultar botón añadir en ThorAI
-                }
+                
 
             };
         });
@@ -1547,143 +1504,6 @@
 
 
         
-        // --- MÓDULO 5: THORAI PRO (ASISTENTE IA INTELIGENTE CON CONTEXTO) ---
-        const aiChatInput = document.getElementById('ai-chat-input');
-        const btnSendAi = document.getElementById('btn-send-ai');
-        const aiMessagesBox = document.getElementById('ai-messages-box');
-        const btnClearChat = document.getElementById('btn-clear-chat');
-        const aiGameSelector = document.getElementById('ai-game-selector');
-
-        let chatHistory = JSON.parse(localStorage.getItem('thor_ai_chat')) || [];
-
-        function updateAiGameSelector() {
-            const currentVal = aiGameSelector.value;
-            aiGameSelector.innerHTML = '<option value="">-- Toda la Biblioteca (General) --</option>';
-            library.forEach(g => {
-                const opt = document.createElement('option');
-                opt.value = g.id;
-                opt.textContent = `${g.title} (${g.console || 'Gen'} - ${g.progress || 0}%)`;
-                aiGameSelector.appendChild(opt);
-            });
-            if(currentVal) aiGameSelector.value = currentVal;
-        }
-
-        function renderChatHistory() {
-            updateAiGameSelector();
-            if(chatHistory.length === 0) return;
-            aiMessagesBox.innerHTML = `
-                <div style="display: flex; gap: 12px; max-width: 80%;">
-                    <div style="width: 32px; height: 32px; background: #a855f7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">🤖</div>
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: 16px; font-size: 0.95rem; color: #fff; line-height: 1.5;">
-                        ¡Hola, guardián! Soy <b>ThorAI Pro</b>. He sincronizado tu biblioteca. Selecciona un juego arriba para que analice tu progreso, notas y te dé estrategia exacta.
-                    </div>
-                </div>
-            `;
-            chatHistory.forEach(msg => {
-                appendChatMessage(msg.sender, msg.text, false);
-            });
-            aiMessagesBox.scrollTop = aiMessagesBox.scrollHeight;
-        }
-
-        function appendChatMessage(sender, text, save = true) {
-            const isUser = sender === 'user';
-            const msgDiv = document.createElement('div');
-            msgDiv.style.cssText = `display: flex; gap: 12px; max-width: 85%; ${isUser ? 'margin-left: auto; flex-direction: row-reverse;' : ''}`;
-            
-            const avatar = document.createElement('div');
-            avatar.style.cssText = `width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; background: ${isUser ? 'var(--accent)' : '#a855f7'};`;
-            avatar.textContent = isUser ? '👤' : '🤖';
-
-            const bubble = document.createElement('div');
-            bubble.style.cssText = `background: ${isUser ? 'linear-gradient(135deg, #ff2a3b 0%, #b30012 100%)' : 'var(--bg-card)'}; border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: 16px; font-size: 0.95rem; color: #fff; line-height: 1.5; word-break: break-word;`;
-            bubble.innerHTML = text;
-
-            msgDiv.appendChild(avatar);
-            msgDiv.appendChild(bubble);
-            aiMessagesBox.appendChild(msgDiv);
-            aiMessagesBox.scrollTop = aiMessagesBox.scrollHeight;
-
-            if(save) {
-                chatHistory.push({ sender, text });
-                localStorage.setItem('thor_ai_chat', JSON.stringify(chatHistory));
-            }
-        }
-
-        function handleAiSend() {
-            const text = aiChatInput.value.trim();
-            if(!text) return;
-            appendChatMessage('user', text);
-            aiChatInput.value = '';
-
-            const selectedGameId = aiGameSelector.value;
-            let targetGame = null;
-            if(selectedGameId) {
-                targetGame = library.find(g => g.id == selectedGameId);
-            }
-
-            // ThorAI Pro Smart Analysis simulation based on actual library data and game context
-            setTimeout(() => {
-                let responseText = "";
-                const lower = text.toLowerCase();
-
-                if(targetGame) {
-                    // Context-aware response for selected game
-                    const p = targetGame.progress || 0;
-                    const statusText = targetGame.status === 'completed' ? 'Completado' : (targetGame.status === 'playing' ? 'Jugando Actualmente' : 'En el Backlog');
-                    
-                    if(lower.includes('consejo') || lower.includes('guia') || lower.includes('ayuda') || lower.includes('jefe') || lower.includes('atascado')) {
-                        responseText = `Analizando <b>${targetGame.title}</b> (${targetGame.console || 'General'}): Veo que estás al <b>${p}%</b> y tu estado es <em>${statusText}</em>. ${targetGame.notes ? '<br><br><b>Tus notas guardadas:</b> ' + targetGame.notes : ''}<br><br>💡 <b>Consejo Pro de ThorAI:</b> Para avanzar desde este punto, te sugiero revisar el mapa interactivo de ThorHub para marcar los coleccionables pendientes o desbloquear rutas rápidas. ¡No olvides actualizar tu progreso al 100% pronto!`;
-                    } else if(lower.includes('cuanto') || lower.includes('duracion') || lower.includes('horas')) {
-                        responseText = `Sobre <b>${targetGame.title}</b> (${targetGame.genre || 'Género mixto'}): Tu progreso actual es del <b>${p}%</b>. Dependiendo de tu estilo de juego, este título suele tomar entre 25 y 45 horas si vas a por los secretos. ¡Sigue dándole caña!`;
-                    } else {
-                        responseText = `He tomado nota sobre <b>${targetGame.title}</b> (Consola: ${targetGame.console || 'N/D'} | Progreso: ${p}%). ${targetGame.notes ? 'Tus notas dicen: "' + targetGame.notes + '".' : ''} ¿Quieres que te ayude con alguna estrategia o ruta secreta para este título?`;
-                    }
-                } else {
-                    // General library response
-                    if(lower.includes('zelda') || lower.includes('link')) {
-                        responseText = "Para la saga Zelda, recuerda explorar cada rincón del mapa interactivo de ThorHub. ¡Añade los santuarios con coordenadas precisas!";
-                    } else if(lower.includes('juego') || lower.includes('recomienda') || lower.includes('empezar')) {
-                        const unplayed = library.filter(g => g.status === 'backlog');
-                        if(unplayed.length > 0) {
-                            const rec = unplayed[Math.floor(Math.random() * unplayed.length)];
-                            responseText = `Analizando tu biblioteca general... Te recomiendo encarecidamente empezar con <b>${rec.title}</b> (${rec.console || 'Multi'}), que lo tienes en el Backlog esperando. ¡O usa la Ruleta 🎰!`;
-                        } else {
-                            responseText = "¡Tienes toda tu biblioteca al día! Añade más juegos en ThorFlix o usa la Ruleta 🎰.";
-                        }
-                    } else if(lower.includes('estadisticas') || lower.includes('resumen') || lower.includes('biblioteca')) {
-                        const total = library.length;
-                        const completed = library.filter(g => g.status === 'completed').length;
-                        const playing = library.filter(g => g.status === 'playing').length;
-                        responseText = `📊 <b>Resumen de tu Ecosistema ThorHub:</b><br>• Total de juegos: ${total}<br>• Jugando actualmente: ${playing}<br>• Completados: ${completed}<br><br>¡Vas por un excelente camino, guardián!`;
-                    } else {
-                        responseText = `💡 <b>Consejo de ThorAI Pro:</b> Tienes ${library.length} juegos registrados. <b>Tip:</b> Selecciona un juego específico en el menú desplegable superior del chat para que pueda analizar tu progreso exacto y darte respuestas a medida.`;
-                    }
-                }
-
-                appendChatMessage('ai', responseText);
-            }, 600);
-        }
-
-        btnSendAi.onclick = handleAiSend;
-        aiChatInput.onkeydown = (e) => {
-            if(e.key === 'Enter') handleAiSend();
-        };
-
-        btnClearChat.onclick = () => {
-            if(confirm("¿Borrar historial de chat con ThorAI?")) {
-                chatHistory = [];
-                localStorage.removeItem('thor_ai_chat');
-                aiMessagesBox.innerHTML = `
-                    <div style="display: flex; gap: 12px; max-width: 80%;">
-                        <div style="width: 32px; height: 32px; background: #a855f7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">🤖</div>
-                        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: 16px; font-size: 0.95rem; color: #fff; line-height: 1.5;">
-                            ¡Historial reiniciado! ¿En qué te puedo ayudar ahora?
-                        </div>
-                    </div>
-                `;
-            }
-        };
-
         // --- MÓDULO 6: AUTOCOMPLETAR CON IGDB / API MOCK ---
         document.getElementById('btn-igdb-autofill').onclick = () => {
             const titleInput = document.getElementById('game-title').value.trim();
@@ -1733,8 +1553,7 @@
             renderLibrary();
             renderNotes();
             updateMapGameSelector();
-            updateAiGameSelector();
-            renderChatHistory();
+            
         } catch(err) {
             console.error("Error al inicializar ThorHub:", err);
         }
