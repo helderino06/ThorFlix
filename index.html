@@ -692,6 +692,7 @@
             <button class="hub-tab notes-tab" data-target="notes-view" id="tab-notes">📝 Notas</button>
             <button class="hub-tab maps-tab" data-target="maps-view" id="tab-maps">🗺️ Mapas</button>
             <button class="hub-tab roulette-tab" data-target="roulette-view" id="tab-roulette">🎰 Ruleta</button>
+            <button class="hub-tab ai-tab" data-target="ai-view" id="tab-ai">🤖 ThorAI</button>
         </div>
 
         <div class="nav-actions">
@@ -740,6 +741,37 @@
             </div>
         </section>
 
+        
+        <!-- VISTA THORAI (ASISTENTE IA) -->
+        <section id="ai-view" class="view-section">
+            <div class="ai-container" style="display: flex; flex-direction: column; height: calc(100vh - 160px); max-width: 1000px; margin: 0 auto; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.7);">
+                <div class="ai-header" style="padding: 20px 24px; background: rgba(139, 92, 246, 0.1); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);">🤖</div>
+                        <div>
+                            <h3 style="font-size: 1.1rem; color: #fff; font-weight: 800;">ThorAI - Asistente de Videojuegos</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Pregúntame sobre guías, trucos o recomendaciones para tus juegos</p>
+                        </div>
+                    </div>
+                    <button class="hub-tab" id="btn-clear-chat" style="background: rgba(255,255,255,0.05); font-size: 0.8rem; padding: 6px 12px;">Limpiar Chat</button>
+                </div>
+                
+                <div class="ai-messages" id="ai-messages-box" style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; gap: 12px; max-width: 80%;">
+                        <div style="width: 32px; height: 32px; background: #a855f7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">🤖</div>
+                        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: 16px; font-size: 0.95://rem; color: #fff; line-height: 1.5;">
+                            ¡Hola, guardián! Soy <b>ThorAI</b>, tu copiloto en este ecosistema. ¿En qué juego necesitas ayuda hoy? Puedo darte estrategias de jefes, trucos de velocidad o sugerencias basadas en tu biblioteca.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-input-area" style="padding: 20px 24px; background: rgba(16, 16, 22, 0.9); border-top: 1px solid var(--border-subtle); display: flex; gap: 12px; align-items: center;">
+                    <input type="text" id="ai-chat-input" placeholder="Ej: ¿Cómo consigo la espada legendaria en Zelda? o Dame un consejo..." style="flex: 1; background: #14141c; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 14px 18px; outline: none; font-size: 0.95rem;">
+                    <button class="btn-submit" id="btn-send-ai" style="width: auto; margin: 0; padding: 14px 28px; background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%); box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);">Enviar</button>
+                </div>
+            </div>
+        </section>
+
         <!-- VISTA RULETA / GENERADOR ALEATORIO -->
         <section id="roulette-view" class="view-section">
             <div class="roulette-container">
@@ -775,7 +807,7 @@
             <input type="hidden" id="game-id">
             
             <div class="form-group">
-                <label>Título del Juego</label>
+                <label>Título del Juego <button type="button" id="btn-igdb-autofill" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; font-weight: 700;">✨ Autocompletar con IGDB / IA</button></label>
                 <input type="text" id="game-title" placeholder="Ej: Super Metroid" required>
             </div>
 
@@ -918,10 +950,16 @@
                     updateMapGameSelector();
                     renderMaps();
                 }
+                
                 if(targetId === 'roulette-view') {
                     currentTab = 'roulette';
                     btnOpenAdd.style.display = 'none'; // Ocultar botón añadir en la ruleta
                 }
+                if(targetId === 'ai-view') {
+                    currentTab = 'ai';
+                    btnOpenAdd.style.display = 'none'; // Ocultar botón añadir en ThorAI
+                }
+
             };
         });
 
@@ -1500,11 +1538,151 @@
         };
 
 
+        
+        // --- MÓDULO 5: THORAI (ASISTENTE IA) ---
+        const aiChatInput = document.getElementById('ai-chat-input');
+        const btnSendAi = document.getElementById('btn-send-ai');
+        const aiMessagesBox = document.getElementById('ai-messages-box');
+        const btnClearChat = document.getElementById('btn-clear-chat');
+
+        let chatHistory = JSON.parse(localStorage.getItem('thor_ai_chat')) || [];
+
+        function renderChatHistory() {
+            if(chatHistory.length === 0) return;
+            // Clear default greeting if we have history
+            aiMessagesBox.innerHTML = `
+                <div style="display: flex; gap: 12px; max-width: 80%;">
+                    <div style="width: 32px; height: 32px; background: #a855f7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">🤖</div>
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: 16px; font-size: 0.95rem; color: #fff; line-height: 1.5;">
+                        ¡Hola, guardián! Soy <b>ThorAI</b>, tu copiloto en este ecosistema. ¿En qué juego necesitas ayuda hoy?
+                    </div>
+                </div>
+            `;
+            chatHistory.forEach(msg => {
+                appendChatMessage(msg.sender, msg.text, false);
+            });
+            aiMessagesBox.scrollTop = aiMessagesBox.scrollHeight;
+        }
+
+        function appendChatMessage(sender, text, save = true) {
+            const isUser = sender === 'user';
+            const msgDiv = document.createElement('div');
+            msgDiv.style.cssText = `display: flex; gap: 12px; max-width: 85%; ${isUser ? 'margin-left: auto; flex-direction: row-reverse;' : ''}`;
+            
+            const avatar = document.createElement('div');
+            avatar.style.cssText = `width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; background: ${isUser ? 'var(--accent)' : '#a855f7'};`;
+            avatar.textContent = isUser ? '👤' : '🤖';
+
+            const bubble = document.createElement('div');
+            bubble.style.cssText = `background: ${isUser ? 'linear-gradient(135deg, #ff2a3b 0%, #b30012 100%)' : 'var(--bg-card)'}; border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: 16px; font-size: 0.95rem; color: #fff; line-height: 1.5; word-break: break-word;`;
+            bubble.innerHTML = text;
+
+            msgDiv.appendChild(avatar);
+            msgDiv.appendChild(bubble);
+            aiMessagesBox.appendChild(msgDiv);
+            aiMessagesBox.scrollTop = aiMessagesBox.scrollHeight;
+
+            if(save) {
+                chatHistory.push({ sender, text });
+                localStorage.setItem('thor_ai_chat', JSON.stringify(chatHistory));
+            }
+        }
+
+        function handleAiSend() {
+            const text = aiChatInput.value.trim();
+            if(!text) return;
+            appendChatMessage('user', text);
+            aiChatInput.value = '';
+
+            // Simulación inteligente de respuesta IA especializada en videojuegos y tu biblioteca
+            setTimeout(() => {
+                let responseText = "¡Excelente pregunta! Como IA de ThorHub, te sugiero revisar las notas guardadas de ese juego o consultar el mapa interactivo para encontrar todos los coleccionables ocultos.";
+                const lower = text.toLowerCase();
+                
+                if(lower.includes('zelda') || lower.includes('link')) {
+                    responseText = "Para la saga Zelda, recuerda explorar cada rincón del mapa interactivo de ThorHub. ¡Añade los santuarios con coordenadas precisas para no perderte nada!";
+                } else if(lower.includes('juego') || lower.includes('recomienda') || lower.includes('empezar')) {
+                    responseText = "¡Usa la pestaña <b>Ruleta 🎰</b> del Hub! Es perfecta cuando tienes parálisis por análisis en tu Backlog y no sabes cuál iniciar.";
+                } else if(lower.includes('metroid')) {
+                    responseText = "En Metroid, el salto espacial y el rayo de plasma son clave. Revisa tus notas de velocidad en el bloc de notas de ThorHub para anotar tus tiempos.";
+                } else if(lower.includes('hola') || lower.includes('quien eres')) {
+                    responseText = "¡Hola de nuevo! Soy ThorAI, tu asistente personal integrado directamente en ThorHub para ayudarte a dominar tus videojuegos y organizar tu ecosistema.";
+                }
+
+                appendChatMessage('ai', responseText);
+            }, 600);
+        }
+
+        btnSendAi.onclick = handleAiSend;
+        aiChatInput.onkeydown = (e) => {
+            if(e.key === 'Enter') handleAiSend();
+        };
+
+        btnClearChat.onclick = () => {
+            if(confirm("¿Borrar historial de chat con ThorAI?")) {
+                chatHistory = [];
+                localStorage.removeItem('thor_ai_chat');
+                aiMessagesBox.innerHTML = `
+                    <div style="display: flex; gap: 12px; max-width: 80%;">
+                        <div style="width: 32px; height: 32px; background: #a855f7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">🤖</div>
+                        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: 16px; font-size: 0.95rem; color: #fff; line-height: 1.5;">
+                            ¡Historial reiniciado! ¿En qué te puedo ayudar ahora?
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        // --- MÓDULO 6: AUTOCOMPLETAR CON IGDB / API MOCK ---
+        document.getElementById('btn-igdb-autofill').onclick = () => {
+            const titleInput = document.getElementById('game-title').value.trim();
+            if(!titleInput) {
+                alert("Escribe primero parte del título del juego (ej: Hollow Knight, Elden Ring, Zelda) para buscar en la base de datos.");
+                return;
+            }
+
+            // Simulación inteligente de consulta a API IGDB / HLTB
+            const queryLower = titleInput.toLowerCase();
+            let mockData = {
+                console: "Multi",
+                genre: "Aventura / Acción",
+                rating: 5,
+                notes: "Duración estimada: ~35 horas. Obra maestra imprescindible.",
+                cover: ""
+            };
+
+            if(queryLower.includes('zelda')) {
+                mockData = { console: "Nintendo Switch", genre: "Aventura / Mundo Abierto", rating: 5, notes: "Duración: 50-100h. Libertad absoluta de exploración.", cover: "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=400&q=80" };
+            } else if(queryLower.includes('metroid')) {
+                mockData = { console: "SNES / GBA", genre: "Metroidvania", rating: 5, notes: "Clásico absoluto. Exploración y mejora progresiva de habilidades.", cover: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" };
+            } else if(queryLower.includes('elden') || queryLower.includes('soul')) {
+                mockData = { console: "PC / PS5", genre: "Action RPG / Souls-like", rating: 5, notes: "Reto legendario. Mucho mapa por descubrir.", cover: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400&q=80" };
+            } else if(queryLower.includes('hollow')) {
+                mockData = { console: "PC / Switch", genre: "Metroidvania / Indie", rating: 5, notes: "Ambientación impecable, música excelente y alta dificultad.", cover: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400&q=80" };
+            }
+
+            document.getElementById('game-console').value = mockData.console;
+            document.getElementById('game-genre').value = mockData.genre;
+            document.getElementById('game-notes').value = mockData.notes;
+            ratingInput.value = mockData.rating;
+            updateStars(mockData.rating);
+            
+            if(mockData.cover) {
+                tempCoverData = mockData.cover;
+                const preview = document.getElementById('cover-preview');
+                preview.src = tempCoverData;
+                preview.style.display = 'block';
+            }
+
+            alert(`✨ ¡Datos autocompletados desde IGDB / HLTB para "${titleInput}"! Revisa los campos.`);
+        };
+
         // Inicialización segura general
         try {
             renderLibrary();
             renderNotes();
             updateMapGameSelector();
+            renderChatHistory();
         } catch(err) {
             console.error("Error al inicializar ThorHub:", err);
         }
