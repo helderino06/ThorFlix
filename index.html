@@ -673,6 +673,45 @@
             border: 1px dashed rgba(255, 255, 255, 0.15);
             margin-top: 20px;
         }
+    
+        /* TEMAS DINÁMICOS CYBER THEMES */
+        body.theme-crimson {
+            --bg-base: #040406;
+            --bg-surface: #101016;
+            --bg-card: #171720;
+            --accent: #ff2a3b;
+            --accent-gradient: linear-gradient(135deg, #ff2a3b 0%, #b30012 100%);
+            --accent-glow: rgba(255, 42, 59, 0.5);
+            --border-active: rgba(255, 42, 59, 0.6);
+        }
+        body.theme-oled {
+            --bg-base: #000000;
+            --bg-surface: #0a0a0c;
+            --bg-card: #121218;
+            --accent: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --border-active: rgba(59, 130, 246, 0.7);
+        }
+        body.theme-synthwave {
+            --bg-base: #0c0714;
+            --bg-surface: #161026;
+            --bg-card: #201738;
+            --accent: #a855f7;
+            --accent-gradient: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            --accent-glow: rgba(168, 85, 247, 0.6);
+            --border-active: rgba(168, 85, 247, 0.8);
+        }
+        body.theme-gameboy {
+            --bg-base: #07120a;
+            --bg-surface: #0f2214;
+            --bg-card: #18331e;
+            --accent: #10b981;
+            --accent-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            --accent-glow: rgba(16, 185, 129, 0.6);
+            --border-active: rgba(16, 185, 129, 0.8);
+        }
+
     </style>
 </head>
 <body>
@@ -694,9 +733,17 @@
             <button class="hub-tab roulette-tab" data-target="roulette-view" id="tab-roulette">🎰 Ruleta</button>
         </div>
 
+
         <div class="nav-actions">
+            <select id="theme-selector" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 10px 14px; outline: none; font-size: 0.85rem; font-weight: 700; cursor: pointer;">
+                <option value="crimson">🔴 Crimson (Por defecto)</option>
+                <option value="oled">🖤 OLED Black</option>
+                <option value="synthwave">🌆 Synthwave</option>
+                <option value="gameboy">👾 Game Boy Classic</option>
+            </select>
             <button class="btn-add" id="btn-open-add"><span>+</span> Añadir Elemento</button>
         </div>
+
     </nav>
 
     <main>
@@ -1547,6 +1594,21 @@
 
             alert(`✨ ¡Datos autocompletados desde IGDB / HLTB para "${titleInput}"! Revisa los campos.`);
         };
+
+        
+        // --- MÓDULO DE TEMAS DINÁMICOS (CYBER THEMES) ---
+        const themeSelector = document.getElementById('theme-selector');
+        const savedTheme = localStorage.getItem('thor_theme') || 'crimson';
+        
+        document.body.className = `theme-${savedTheme}`;
+        if(themeSelector) {
+            themeSelector.value = savedTheme;
+            themeSelector.onchange = (e) => {
+                const selectedTheme = e.target.value;
+                document.body.className = `theme-${selectedTheme}`;
+                localStorage.setItem('thor_theme', selectedTheme);
+            };
+        }
 
         // Inicialización segura general
         try {
