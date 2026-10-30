@@ -749,6 +749,21 @@
     <main>
         <!-- VISTA THORFLIX -->
         <section id="thorflix-view" class="view-section active">
+            <div class="maps-toolbar" style="margin-bottom: 24px; display: flex; gap: 14px; flex-wrap: wrap; align-items: center;">
+                <div style="flex: 1; min-width: 220px;">
+                    <input type="text" id="flix-search-input" placeholder="🔍 Buscar juego por título o género..." style="width: 100%; background: #14141c; color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 10px 14px; outline: none; font-size: 0.9rem;">
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <select id="flix-filter-console" style="background-color: #14141c; color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 10px 14px; outline: none; font-size: 0.9rem;">
+                        <option value="">Todas las Consolas</option>
+                    </select>
+                    <select id="flix-filter-rating" style="background-color: #14141c; color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 10px 14px; outline: none; font-size: 0.9rem;">
+                        <option value="">Todas las Valoraciones</option>
+                        <option value="5">⭐⭐⭐⭐⭐ (5 Estrellas)</option>
+                        <option value="4">⭐⭐⭐⭐ o más</option>
+                    </select>
+                </div>
+            </div>
             <div id="flix-content"></div>
         </section>
 
@@ -1036,14 +1051,58 @@
             }
         });
 
+        
+        const flixSearchInput = document.getElementById('flix-search-input');
+        const flixFilterConsole = document.getElementById('flix-filter-console');
+        const flixFilterRating = document.getElementById('flix-filter-rating');
+
+        function updateConsoleDropdown() {
+            const currentConsole = flixFilterConsole.value;
+            flixFilterConsole.innerHTML = '<option value="">Todas las Consolas</option>';
+            const consoles = [...new Set(library.map(g => g.console).filter(Boolean))];
+            consoles.sort().forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                flixFilterConsole.appendChild(opt);
+            });
+            flixFilterConsole.value = currentConsole;
+        }
+
+        if(flixSearchInput) flixSearchInput.oninput = () => renderLibrary();
+        if(flixFilterConsole) flixFilterConsole.onchange = () => renderLibrary();
+        if(flixFilterRating) flixFilterRating.onchange = () => renderLibrary();
+
         function renderLibrary() {
             flixContent.innerHTML = '';
-            const playing = library.filter(g => g.status === 'playing');
-            const backlog = library.filter(g => g.status === 'backlog');
-            const completed = library.filter(g => g.status === 'completed');
+            
+            // Aplicar filtros inteligentes
+            let filtered = library;
+            const searchVal = flixSearchInput ? flixSearchInput.value.toLowerCase().trim() : '';
+            const consoleVal = flixFilterConsole ? flixFilterConsole.value : '';
+            const ratingVal = flixFilterRating ? flixFilterRating.value : '';
 
-            if (library.length === 0) {
-                flixContent.innerHTML = `<div class="empty-state">Tu catálogo está vacío.<br>Pulsa <b>"+ Añadir Elemento"</b> para empezar.</div>`;
+            if(searchVal) {
+                filtered = filtered.filter(g => 
+                    (g.title && g.title.toLowerCase().includes(searchVal)) || 
+                    (g.genre && g.genre.toLowerCase().includes(searchVal)) ||
+                    (g.console && g.console.toLowerCase().includes(searchVal))
+                );
+            }
+            if(consoleVal) {
+                filtered = filtered.filter(g => g.console === consoleVal);
+            }
+            if(ratingVal) {
+                const minRating = parseInt(ratingVal);
+                filtered = filtered.filter(g => (g.rating || 0) >= minRating);
+            }
+
+            const playing = filtered.filter(g => g.status === 'playing');
+            const backlog = filtered.filter(g => g.status === 'backlog');
+            const completed = filtered.filter(g => g.status === 'completed');
+
+            if (filtered.length === 0) {
+                flixContent.innerHTML = `<div class="empty-state">No se encontraron juegos con estos filtros o tu catálogo está vacío.<br>Prueba a cambiar la búsqueda o pulsa <b>"+ Añadir Elemento"</b>.</div>`;
                 return;
             }
 
@@ -1051,6 +1110,7 @@
             if (backlog.length > 0) createFlixRow('Mi Lista (Pendientes)', backlog);
             if (completed.length > 0) createFlixRow('Completados', completed);
         }
+
 
         function createFlixRow(title, games) {
             const section = document.createElement('div');
@@ -1176,6 +1236,7 @@
             flixModal.style.display = 'none';
             renderLibrary();
             updateMapGameSelector();
+            updateConsoleDropdown();
         };
 
         document.getElementById('btn-delete-game').onclick = () => {
