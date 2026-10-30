@@ -21,6 +21,7 @@
             --success: #10b981;
             --notes-accent: #3b82f6;
             --maps-accent: #10b981;
+            --roulette-accent: #a855f7;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -65,7 +66,7 @@
             right: -5vw;
             width: 60vw;
             height: 60vw;
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, rgba(147, 51, 234, 0.05) 50%, transparent 70%);
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, rgba(59, 130, 246, 0.05) 50%, transparent 70%);
             border-radius: 50%;
             filter: blur(70px);
         }
@@ -108,21 +109,23 @@
 
         .hub-tabs {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.04);
             padding: 5px;
             border-radius: 14px;
             border: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .hub-tab {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             cursor: pointer;
             transition: all 0.25s ease;
             display: flex;
@@ -134,6 +137,7 @@
         .hub-tab.active { background: var(--accent-gradient); color: #fff; box-shadow: 0 4px 15px var(--accent-glow); }
         .hub-tab.notes-tab.active { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
         .hub-tab.maps-tab.active { background: linear-gradient(135deg, #10b981 0%, #047857 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        .hub-tab.roulette-tab.active { background: linear-gradient(135deg, #a855f7 0%, #6b21a8 100%); box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
         
         .nav-actions { display: flex; align-items: center; gap: 16px; }
 
@@ -434,6 +438,92 @@
         .map-location-item h4 { font-size: 0.95rem; color: #fff; margin-bottom: 4px; display: flex; justify-content: space-between; }
         .map-location-item p { font-size: 0.8rem; color: var(--text-muted); }
 
+        /* MÓDULO 4: RULETA / GENERADOR ALEATORIO */
+        .roulette-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            max-width: 650px;
+            margin: 0 auto;
+            text-align: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+        }
+
+        .roulette-display {
+            width: 220px;
+            aspect-ratio: 2 / 3;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 2px solid rgba(168, 85, 247, 0.4);
+            margin: 24px 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 25px rgba(168, 85, 247, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .roulette-display img { width: 100%; height: 100%; object-fit: cover; }
+        .roulette-display .placeholder-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            padding: 20px;
+        }
+
+        .roulette-title-result {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 6px;
+            min-height: 40px;
+        }
+
+        .roulette-subtitle-result {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .btn-roulette {
+            background: linear-gradient(135deg, #a855f7 0%, #6b21a8 100%);
+            color: white;
+            border: none;
+            padding: 16px 36px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.5);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-roulette:hover { transform: translateY(-3px) scale(1.02); filter: brightness(1.15); box-shadow: 0 15px 30px rgba(168, 85, 247, 0.7); }
+        .btn-roulette:active { transform: scale(0.96); }
+
+        .roulette-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .roulette-filters select {
+            background-color: #14141c;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px 16px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
         /* Modales Unificados */
         .modal {
             display: none;
@@ -601,6 +691,7 @@
             <button class="hub-tab active" data-target="thorflix-view" id="tab-flix">🎬 ThorFlix</button>
             <button class="hub-tab notes-tab" data-target="notes-view" id="tab-notes">📝 Notas</button>
             <button class="hub-tab maps-tab" data-target="maps-view" id="tab-maps">🗺️ Mapas</button>
+            <button class="hub-tab roulette-tab" data-target="roulette-view" id="tab-roulette">🎰 Ruleta</button>
         </div>
 
         <div class="nav-actions">
@@ -646,6 +737,31 @@
                     <h3 style="font-size: 1rem; color: #fff; margin-bottom: 8px;">Marcadores y Puntos de Interés</h3>
                     <div id="maps-list-content" style="display: flex; flex-direction: column; gap: 12px; overflow-y: auto;"></div>
                 </div>
+            </div>
+        </section>
+
+        <!-- VISTA RULETA / GENERADOR ALEATORIO -->
+        <section id="roulette-view" class="view-section">
+            <div class="roulette-container">
+                <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 8px;">¿Qué jugamos hoy? 🎲</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Deja que la ruleta elija tu próxima aventura de la lista de pendientes.</p>
+                
+                <div class="roulette-filters">
+                    <select id="roulette-filter-status">
+                        <option value="backlog">Filtrar: Solo Pendientes (Backlog)</option>
+                        <option value="playing">Filtrar: Jugando Actualmente</option>
+                        <option value="all">Filtrar: Toda la Biblioteca</option>
+                    </select>
+                </div>
+
+                <div class="roulette-display" id="roulette-display-box">
+                    <div class="placeholder-text">¡Gira la ruleta!</div>
+                </div>
+
+                <div class="roulette-title-result" id="roulette-result-title">Pulsa el botón</div>
+                <div class="roulette-subtitle-result" id="roulette-result-sub">¡El destino decide!</div>
+
+                <button class="btn-roulette" id="btn-spin-roulette">🎰 ¡Girar Ruleta!</button>
             </div>
         </section>
     </main>
@@ -788,12 +904,23 @@
                 const targetId = tab.getAttribute('data-target');
                 document.getElementById(targetId).classList.add('active');
                 
-                if(targetId === 'thorflix-view') currentTab = 'thorflix';
-                if(targetId === 'notes-view') currentTab = 'notes';
+                if(targetId === 'thorflix-view') {
+                    currentTab = 'thorflix';
+                    btnOpenAdd.style.display = 'flex';
+                }
+                if(targetId === 'notes-view') {
+                    currentTab = 'notes';
+                    btnOpenAdd.style.display = 'flex';
+                }
                 if(targetId === 'maps-view') {
                     currentTab = 'maps';
+                    btnOpenAdd.style.display = 'flex';
                     updateMapGameSelector();
                     renderMaps();
+                }
+                if(targetId === 'roulette-view') {
+                    currentTab = 'roulette';
+                    btnOpenAdd.style.display = 'none'; // Ocultar botón añadir en la ruleta
                 }
             };
         });
@@ -1091,7 +1218,7 @@
         };
 
 
-        // --- MÓDULO 3: MAPAS ( CORREGIDO Y ROBUSTO ) ---
+        // --- MÓDULO 3: MAPAS ---
         let mapsData = JSON.parse(localStorage.getItem('thorflix_maps_data')) || {};
         
         const mapModal = document.getElementById('map-modal');
@@ -1118,7 +1245,6 @@
             renderMaps();
         };
 
-        // Subir imagen de mapa
         document.getElementById('btn-upload-map-img').onclick = () => {
             if(!mapGameSelector.value) {
                 alert("Selecciona primero un juego en la lista desplegable.");
@@ -1157,7 +1283,6 @@
             this.value = '';
         });
 
-        // Buscar mapa en Google
         document.getElementById('btn-search-map-web').onclick = (e) => {
             e.preventDefault();
             const gameId = mapGameSelector.value;
@@ -1170,7 +1295,6 @@
             window.open('https://www.google.com/search?tbm=isch&q=' + query, '_blank');
         };
 
-        // Clic en el canvas del mapa para añadir pin
         document.getElementById('cyber-map').onclick = function(e) {
             const gameId = mapGameSelector.value;
             if(!gameId) {
@@ -1191,7 +1315,6 @@
             const mapCanvas = document.getElementById('cyber-map');
             const mapsListContent = document.getElementById('maps-list-content');
             
-            // Limpiar pines y fondo
             const existingPins = mapCanvas.querySelectorAll('.map-pin');
             existingPins.forEach(p => p.remove());
             mapsListContent.innerHTML = '';
@@ -1314,12 +1437,68 @@
                 const id = parseInt(document.getElementById('map-id').value);
                 if(mapsData[gameId] && mapsData[gameId].pins) {
                     mapsData[gameId].pins = mapsData[gameId].pins.filter(x => x.id !== id);
-                    localStorage.setItem('thorpy_maps_data' ? '' : 'thorflix_maps_data', JSON.stringify(mapsData));
+                    localStorage.setItem('thorflix_maps_data', JSON.stringify(mapsData));
                 }
                 mapModal.style.display = 'none';
                 renderMaps();
             }
         };
+
+
+        // --- MÓDULO 4: RULETA / GENERADOR ALEATORIO ---
+        const btnSpinRoulette = document.getElementById('btn-spin-roulette');
+        const rouletteDisplayBox = document.getElementById('roulette-display-box');
+        const rouletteResultTitle = document.getElementById('roulette-result-title');
+        const rouletteResultSub = document.getElementById('roulette-result-sub');
+        const rouletteFilterStatus = document.getElementById('roulette-filter-status');
+
+        btnSpinRoulette.onclick = () => {
+            const filterVal = rouletteFilterStatus.value;
+            let candidateGames = library;
+            if (filterVal !== 'all') {
+                candidateGames = library.filter(g => g.status === filterVal);
+            }
+
+            if (candidateGames.length === 0) {
+                rouletteDisplayBox.innerHTML = `<div class="placeholder-text">Sin juegos</div>`;
+                rouletteResultTitle.textContent = "¡Biblioteca vacía o sin juegos en este filtro!";
+                rouletteResultSub.textContent = "Añade juegos en ThorFlix o cambia el filtro.";
+                return;
+            }
+
+            // Animación de giro rápida (efecto slot machine)
+            btnSpinRoulette.disabled = true;
+            let counter = 0;
+            const maxClicks = 14;
+            const intervalTime = 80;
+
+            const spinInterval = setInterval(() => {
+                const randomTempGame = candidateGames[Math.floor(Math.random() * candidateGames.length)];
+                if (randomTempGame.cover) {
+                    rouletteDisplayBox.innerHTML = `<img src="${randomTempGame.cover}" alt="Spinning">`;
+                } else {
+                    rouletteDisplayBox.innerHTML = `<div class="placeholder-text" style="font-size:0.9rem;">${randomTempGame.title}</div>`;
+                }
+                rouletteResultTitle.textContent = randomTempGame.title;
+                rouletteResultSub.textContent = `Consola: ${randomTempGame.console || 'N/D'} | Género: ${randomTempGame.genre || 'N/D'}`;
+                
+                counter++;
+                if (counter >= maxClicks) {
+                    clearInterval(spinInterval);
+                    // Elección final definitiva aleatoria
+                    const finalGame = candidateGames[Math.floor(Math.random() * candidateGames.length)];
+                    if (finalGame.cover) {
+                        rouletteDisplayBox.innerHTML = `<img src="${finalGame.cover}" alt="${finalGame.title}">`;
+                    } else {
+                        rouletteDisplayBox.innerHTML = `<div class="placeholder-text">${finalGame.title}</div>`;
+                    }
+                    rouletteResultTitle.textContent = "🎉 ¡Te toca jugar a: " + finalGame.title + "!";
+                    rouletteResultSub.textContent = `Consola: ${finalGame.console || 'N/D'} — ¡A por él!`;
+                    btnSpinRoulette.disabled = false;
+                }
+            }, intervalTime);
+        };
+
 
         // Inicialización segura general
         try {
